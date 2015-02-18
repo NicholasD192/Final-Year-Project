@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.Menu;
@@ -27,6 +28,8 @@ import com.nicholasdavies.bitalinosensorapplication.BITalinoFrame;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -96,6 +99,19 @@ public class LiveInfo extends Activity {
         StrictMode.enableDefaults(); //STRICT MODE ENABLED
         liveGraph = new GraphViewSeries(new GraphView.GraphViewData[] {});
         bCancel = (Button) findViewById(R.id.btnCancel);
+//        try {
+//           // File outputDir = getApplicationContext().getCacheDir();
+//           // File outputFile = File.createTempFile("Prefix",".txt",outputDir);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        File root = android.os.Environment.getExternalStorageDirectory();
+        File dir = new File (root.getAbsolutePath() + "/Temp");
+        dir.mkdir();
+
+        File file = new File(dir, "myData.txt");
+
 
         graphViewWrapperList = new ArrayList<GraphViewWrapper>();
 
@@ -226,6 +242,7 @@ public class LiveInfo extends Activity {
             //liveGraph.appendData/new GraphView.GraphViewData(xVal++, Integer.parseInt(values[0])));
             if(values.length > 0) {
                 try{
+
                     int yVal = Integer.parseInt(values[0]);
 
                     if(yVal < 1000 && yVal > 0) {
