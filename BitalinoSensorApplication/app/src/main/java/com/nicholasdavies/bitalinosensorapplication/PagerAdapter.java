@@ -17,18 +17,20 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Override
     public android.app.Fragment getItem(int arg0) {
         switch (arg0){
-            case 0:
+            case 3:
                 return new FragmentA();
             case 1:
                 return new FragmentB();
-            case 2:
+            case 0:
                 return new FragmentC();
+            case 2:
+                return new FragmentD();
 
 
             default:

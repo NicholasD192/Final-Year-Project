@@ -28,10 +28,15 @@ import com.nicholasdavies.bitalinosensorapplication.BITalinoFrame;
 
 import org.w3c.dom.Text;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -48,6 +53,12 @@ public class LiveInfo extends Activity {
     ListView mainList;
     ArrayAdapter adapter;
     Button bCancel;
+    File root = android.os.Environment.getExternalStorageDirectory();
+    File dir = new File(root.getAbsolutePath() + "/Temp");
+    //File file = new File(dir, "myData.txt");
+    String outputDir = root.getAbsolutePath() + "/Temp/";
+    String outputFile = "myData.txt";
+
 
 
     private class GraphViewWrapper implements GraphViewDataInterface{
@@ -99,18 +110,7 @@ public class LiveInfo extends Activity {
         StrictMode.enableDefaults(); //STRICT MODE ENABLED
         liveGraph = new GraphViewSeries(new GraphView.GraphViewData[] {});
         bCancel = (Button) findViewById(R.id.btnCancel);
-//        try {
-//           // File outputDir = getApplicationContext().getCacheDir();
-//           // File outputFile = File.createTempFile("Prefix",".txt",outputDir);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
-        File root = android.os.Environment.getExternalStorageDirectory();
-        File dir = new File (root.getAbsolutePath() + "/Temp");
-        dir.mkdir();
-
-        File file = new File(dir, "myData.txt");
 
 
         graphViewWrapperList = new ArrayList<GraphViewWrapper>();
@@ -234,7 +234,20 @@ public class LiveInfo extends Activity {
         protected void onPreExecute() {
 
 
-    }
+            if (!dir.isDirectory()) {
+                dir.mkdir();
+            }
+
+            try {
+                File tempFile = new File(outputDir + outputFile);
+                tempFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         @Override
         protected void onProgressUpdate(String... values) {
@@ -242,6 +255,16 @@ public class LiveInfo extends Activity {
             //liveGraph.appendData/new GraphView.GraphViewData(xVal++, Integer.parseInt(values[0])));
             if(values.length > 0) {
                 try{
+                    try
+                    {
+                        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputDir + outputFile, true)));
+                        out.println(values[0]);
+                        out.close();
+                    }
+                    catch(IOException e)
+                    {
+
+                    }
 
                     int yVal = Integer.parseInt(values[0]);
 
@@ -264,6 +287,7 @@ public class LiveInfo extends Activity {
         protected void onCancelled() {
             // stop acquisition and close bluetooth connection
             try {
+
                 bitalino.stop();
                 publishProgress("BITalino is stopped");
 

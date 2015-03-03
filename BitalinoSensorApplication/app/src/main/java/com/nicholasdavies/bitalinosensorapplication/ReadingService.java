@@ -25,5 +25,5 @@ public interface ReadingService {
 
   @PUT("/")
   Response uploadReading(@Body BITalinoReading reading);
-  
+
 }

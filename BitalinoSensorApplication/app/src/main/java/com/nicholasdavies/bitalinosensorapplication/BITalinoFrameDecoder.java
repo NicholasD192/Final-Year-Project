@@ -21,7 +21,7 @@ final class BITalinoFrameDecoder {
 
   /**
    * Decode {@link BITalinoFrame}.
-   * 
+   *
    * @param buffer
    * @return decoded {@link BITalinoFrame}
    */

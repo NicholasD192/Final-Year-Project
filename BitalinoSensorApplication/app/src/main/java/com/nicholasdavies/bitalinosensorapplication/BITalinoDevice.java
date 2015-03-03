@@ -107,7 +107,7 @@ public class BITalinoDevice {
 
   /**
    * Starts acquisition of predefined analog channels.
-   * 
+   *
    * @throws BITalinoException
    */
   public void start() throws BITalinoException {
@@ -124,7 +124,7 @@ public class BITalinoDevice {
 
   /**
    * Stops acquisition.
-   * 
+   *
    * @throws BITalinoException
    */
   public void stop() throws BITalinoException {
@@ -139,7 +139,7 @@ public class BITalinoDevice {
 
   /**
    * Closes socket and releases any open resources.
-   * 
+   *
    * @throws BITalinoException
    */
   private void close() throws BITalinoException {
@@ -175,7 +175,7 @@ public class BITalinoDevice {
 
   /**
    * Reads data from open socket.
-   * 
+   *
    * @param numberOfSamples
    * @return an array of {@link BITalinoFrame} with numberOfSamples positions.
    * @throws BITalinoException

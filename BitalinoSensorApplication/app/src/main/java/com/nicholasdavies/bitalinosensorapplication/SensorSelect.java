@@ -1,37 +1,39 @@
+
 package com.nicholasdavies.bitalinosensorapplication;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
+        import java.io.BufferedReader;
+        import java.io.InputStream;
+        import java.io.InputStreamReader;
+        import java.io.Serializable;
+        import java.lang.reflect.Constructor;
+        import java.util.ArrayList;
+        import java.util.List;
 
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
+        import org.apache.http.HttpEntity;
+        import org.apache.http.HttpResponse;
+        import org.apache.http.client.HttpClient;
+        import org.apache.http.client.methods.HttpPost;
+        import org.apache.http.impl.client.DefaultHttpClient;
+        import org.json.JSONArray;
+        import org.json.JSONObject;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.StrictMode;
-import android.util.Log;
-import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+        import android.app.Activity;
+        import android.content.Intent;
+        import android.os.Bundle;
+        import android.os.StrictMode;
+        import android.util.Log;
+        import android.view.View;
+        import android.widget.Adapter;
+        import android.widget.AdapterView;
+        import android.widget.ArrayAdapter;
+        import android.widget.Button;
+        import android.widget.ListView;
+        import android.widget.TextView;
+        import android.widget.Spinner;
+        import android.widget.Toast;
 
-public class PatientNames extends Activity implements Serializable {
+public class SensorSelect extends Activity implements Serializable {
     /**
      * Called when the activity is first created.
      */
@@ -61,7 +63,7 @@ public class PatientNames extends Activity implements Serializable {
         }
 
         public ListObject() {
-            arbitraryDataA = ++PatientNames.lastArbitraryData;
+            arbitraryDataA = ++SensorSelect.lastArbitraryData;
         }
     }
 
@@ -70,17 +72,18 @@ public class PatientNames extends Activity implements Serializable {
     ListView resultView;
 
     Button bBack;
+    boolean noSensor;
+    int sensorType;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.patient_names);
+        setContentView(R.layout.sensor_select);
         StrictMode.enableDefaults(); //STRICT MODE ENABLE
         patientnames = new ArrayList<ListObject>();
         ListView resultView = (ListView) findViewById(R.id.patient_Names);
-
-        Button bBack = (Button) findViewById(R.id.btnBack);
+        setupDropDown();
 
         getData();
         onClickList();
@@ -88,17 +91,36 @@ public class PatientNames extends Activity implements Serializable {
         ArrayAdapter<ListObject> myadapter = new ArrayAdapter<ListObject>(this, R.layout.patient_list_item, R.id.label, patientnames);
         resultView.setAdapter(myadapter);
 
-        bBack.setOnClickListener(new View.OnClickListener(){
+    }
 
-            public void onClick(View arg0) {
+    public void setupDropDown() {
+        Spinner dropdown = (Spinner) findViewById(R.id.spinner1);
+        String[] dropdownitems = new String[]{"Choose Sensor","EMG", "ECG", "EDA"};
+        ArrayAdapter<String> dropDownAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dropdownitems);
+        dropdown.setAdapter(dropDownAdapter);
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (i == 0)
+                {
+                    noSensor = true;
+                }
+                else
+                {
+                    noSensor = false;
+                    sensorType = i;
 
-                Intent openStartingPoint = new Intent(getApplicationContext(),Main.class);
-                startActivity(openStartingPoint);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
-
     }
+
 
     public void getData() {
         String result = "";
@@ -156,22 +178,39 @@ public class PatientNames extends Activity implements Serializable {
     }
 
 
-    private void onClickList() {
+    public void onClickList() {
         final ListView resultView = (ListView) findViewById(R.id.patient_Names);
         resultView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent PatientNamesIntent = new Intent(getApplicationContext(), PatientInfo.class);
+                if (noSensor)
+                {
 
-                ListObject item = (ListObject) resultView.getItemAtPosition(i);
+                    Toast.makeText(adapterView.getContext(), "You have not selected a sensor", Toast.LENGTH_SHORT).show();
 
-                PatientNamesIntent.putExtra("PatientID",item.getArbitraryDataA());
+                }
+                else
+                {
+                    ListObject item = (ListObject) resultView.getItemAtPosition(i);
+                    Intent intent = new Intent(getApplicationContext(), RecordPatientSensorData.class);
+
+
+                    Bundle extras = new Bundle();
+
+                   extras.putInt("sensorType",sensorType);
+                   extras.putInt("PatientID", item.getArbitraryDataA());
+                   intent.putExtras(extras);
+                    startActivity(intent);
+
+                }
 
 
 
 
 
-                startActivity(PatientNamesIntent);
+
+
+
 
 
 
@@ -181,4 +220,5 @@ public class PatientNames extends Activity implements Serializable {
 
     }
 }
+
 

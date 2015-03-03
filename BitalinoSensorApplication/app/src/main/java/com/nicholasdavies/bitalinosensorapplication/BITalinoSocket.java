@@ -35,7 +35,7 @@ final class BITalinoSocket {
 
   /**
    * Reads data from open socket, if any.
-   * 
+   *
    * @param numberOfSamples
    *          the number of samples to read
    * @param analogChannels
@@ -84,7 +84,7 @@ final class BITalinoSocket {
 
   /**
    * Writes data to socket.
-   * 
+   *
    * @param command
    * @throws BITalinoException
    */
@@ -101,7 +101,7 @@ final class BITalinoSocket {
 
   /**
    * Releases any open resources.
-   * 
+   *
    * @throws BITalinoException
    */
   public void close() throws BITalinoException {
