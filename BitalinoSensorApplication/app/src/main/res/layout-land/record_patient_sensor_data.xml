@@ -1,18 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@drawable/background">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/background"
+
+
+    android:weightSum="1">
+
+
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Collecting Sensor Information"
+        android:textSize="20sp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Test"
-        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@drawable/background"
+        android:id="@+id/live_graph"
+        android:weightSum="1">
 
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        android:layout_centerHorizontal="true" />
 
-</RelativeLayout>
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="Cancel" />
+        <Button
+            android:id="@+id/btnUpload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="Upload" />
+
+    </LinearLayout>
+
+</LinearLayout>
