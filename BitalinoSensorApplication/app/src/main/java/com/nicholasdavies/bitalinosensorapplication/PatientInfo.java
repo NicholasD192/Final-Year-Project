@@ -93,6 +93,21 @@ public class PatientInfo extends Activity {
             }
         });
 
+        bSensorData.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View arg0) {
+
+
+
+                Intent patientIdIntent = getIntent();
+                int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
+                Intent openStartingPoint = new Intent(getApplicationContext(),ListPatientSensorData.class);
+                openStartingPoint.putExtra("PatientID",PatientID);
+                startActivity(openStartingPoint);
+
+            }
+        });
+
 
 
 

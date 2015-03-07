@@ -80,6 +80,7 @@ public class RecordPatientSensorData extends Activity {
 
 
 
+
     private class GraphViewWrapper implements GraphViewDataInterface{
 
         private int mX = 0;
