@@ -40,15 +40,14 @@ public class PatientEditInfo extends Activity {
 
     TextView firstName, lastName, dateOfBirth, patientSymptoms;
 
-    Intent patientIdIntent = getIntent();
-    int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
+
 
 
 
 
     InputStream isr = null;
     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-
+    int patientID = 0;
 
 
 
@@ -58,7 +57,9 @@ public class PatientEditInfo extends Activity {
 
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.patient_info);
+        setContentView(R.layout.patient_editinfo);
+
+
 
         firstName = (EditText) findViewById(R.id.firstName);
 
@@ -71,6 +72,9 @@ public class PatientEditInfo extends Activity {
         bUploadEdit = (Button) findViewById(R.id.btnUploadEdit);
 
         bBack = (Button) findViewById(R.id.btnBack);
+
+        Intent patientIdIntent = getIntent();
+        patientID = patientIdIntent.getIntExtra("PatientID", 0);
 
         getData();
 
@@ -90,9 +94,7 @@ public class PatientEditInfo extends Activity {
 
             public void onClick(View arg0) {
 
-//                Intent openStartingPoint = new Intent(getApplicationContext(),PatientNames.class);
-//                openStartingPoint.putExtra("PatientID",PatientID);
-//                startActivity(openStartingPoint);
+
 
                     String firstname = "" + firstName.getText().toString();
                     String lastname = "" + lastName.getText().toString();
@@ -102,7 +104,7 @@ public class PatientEditInfo extends Activity {
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 
 
-                    nameValuePairs.add(new BasicNameValuePair("patientID", String.valueOf(PatientID)));
+                    nameValuePairs.add(new BasicNameValuePair("patientID", String.valueOf(patientID)));
                     nameValuePairs.add(new BasicNameValuePair("firstname", firstname));
                     nameValuePairs.add(new BasicNameValuePair("lastname", lastname));
                     nameValuePairs.add(new BasicNameValuePair("dateofbirth", dateofbirth));
@@ -117,8 +119,15 @@ public class PatientEditInfo extends Activity {
                         HttpEntity entity = response.getEntity();
                         isr = entity.getContent();
 
-                        String msg = "Data Entered Successfully";
+                        String msg = "Data Edited Successfully";
                         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+
+                        Intent patientIdIntent = getIntent();
+                        int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
+                        Intent openStartingPoint = new Intent(getApplicationContext(),PatientInfo.class);
+                        openStartingPoint.putExtra("PatientID",PatientID);
+                        startActivity(openStartingPoint);
+
                     } catch (ClientProtocolException e) {
                         Log.e("ClientProtocal", "Log_tag");
                         e.printStackTrace();
@@ -148,17 +157,15 @@ public class PatientEditInfo extends Activity {
 
 
 
-        nameValuePairs.add(new BasicNameValuePair("patientID", String.valueOf(PatientID)));
+        nameValuePairs.add(new BasicNameValuePair("patientID", String.valueOf(patientID)));
 
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://192.168.56.101:8080//getpatientinfo.php"); //YOUR PHP SCRIPT ADDRESS
+            HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/getpatientinfo.php"); //YOUR PHP SCRIPT ADDRESS
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
             isr = entity.getContent();
-
-
 
         } catch (ClientProtocolException e) {
             Log.e("ClientProtocal", "Log_tag");
