@@ -72,22 +72,18 @@ public class RecreateSensorData extends Activity {
     ListView mainList;
     ArrayAdapter adapter;
     Button bCancel;
-    Button bUpload;
+    Button bRestart;
     File root = android.os.Environment.getExternalStorageDirectory();
 
     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 
 
-
-
-
-    private class GraphViewWrapper implements GraphViewDataInterface{
+    private class GraphViewWrapper implements GraphViewDataInterface {
 
         private int mX = 0;
         private int mY = 0;
 
-        public GraphViewWrapper(int x, int y)
-        {
+        public GraphViewWrapper(int x, int y) {
             System.out.println("X: " + x + "| Y: " + y);
             mX = x;
             mY = y;
@@ -132,6 +128,8 @@ public class RecreateSensorData extends Activity {
     private ArrayList<GraphViewWrapper> fileBuffer;
     int SensordataID;
     String sensorData;
+    String patientID = "";
+    TextView tvTitle;
     File dir = new File(root.getAbsolutePath() + "/Temp");
     String outputDir = root.getAbsolutePath() + "/Temp/";
     String outputFile = "temp.txt";
@@ -140,11 +138,12 @@ public class RecreateSensorData extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.record_patient_sensor_data);
+        setContentView(R.layout.recreate_sensor_data);
         StrictMode.enableDefaults(); //STRICT MODE ENABLED
-        liveGraph = new GraphViewSeries(new GraphView.GraphViewData[] {});
+        liveGraph = new GraphViewSeries(new GraphView.GraphViewData[]{});
         bCancel = (Button) findViewById(R.id.btnCancel);
-        bUpload = (Button) findViewById(R.id.btnUpload);
+        bRestart = (Button) findViewById(R.id.btnRestart);
+        tvTitle = (TextView) findViewById(R.id.title);
         Intent patientIdIntent = getIntent();
         SensordataID = patientIdIntent.getIntExtra("SensordataID", 0);
 
@@ -154,19 +153,30 @@ public class RecreateSensorData extends Activity {
         writeDataToGraph();
 
         final TestAsyncTask MySyncTask = new TestAsyncTask();
-        bCancel.setOnClickListener(new View.OnClickListener(){
+        bCancel.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
 
                 MySyncTask.cancel(true);
-                Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
+                Intent openStartingPoint = new Intent(getApplicationContext(), PatientNames.class);
                 startActivity(openStartingPoint);
 
             }
 
         });
 
-        GraphView graphView = new LineGraphView(this,"Patient Data");
+        bRestart.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                MySyncTask.cancel(true);
+                TestAsyncTask MySyncTask = new TestAsyncTask();
+                MySyncTask.execute();
+                Toast.makeText(getApplicationContext(), "Connecting to the Bitalino Device", Toast.LENGTH_LONG).show();
+
+
+            }
+        });
+
+        GraphView graphView = new LineGraphView(this, "Patient Data");
         graphView.setScrollable(true);
         graphView.addSeries(liveGraph);
         graphView.setDisableTouch(false);
@@ -178,13 +188,12 @@ public class RecreateSensorData extends Activity {
         LinearLayout layout = (LinearLayout) findViewById(R.id.live_graph);
         layout.addView(graphView);
 
-       // if (!testInitiated)
+        // if (!testInitiated)
         MySyncTask.execute();
     }
 
 
-   void downloadRawSensorData()
-    {
+    void downloadRawSensorData() {
         String result = "";
         InputStream isr = null;
 
@@ -199,7 +208,6 @@ public class RecreateSensorData extends Activity {
             isr = entity.getContent();
 
 
-
         } catch (ClientProtocolException e) {
             Log.e("ClientProtocal", "Log_tag");
             e.printStackTrace();
@@ -207,7 +215,6 @@ public class RecreateSensorData extends Activity {
             Log.e("Log_tag", "IOException");
             e.printStackTrace();
         }
-
 
 
         try {
@@ -232,8 +239,8 @@ public class RecreateSensorData extends Activity {
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json = jArray.getJSONObject(i);
                 sensorData = "" + json.getString("SensorFileName");
+                patientID = "" + json.getString("PatientID");
             }
-
 
 
         } catch (Exception e) {
@@ -243,7 +250,7 @@ public class RecreateSensorData extends Activity {
 
     }
 
-    void saveRawDataToFile(){
+    void saveRawDataToFile() {
         if (!dir.isDirectory()) {
             dir.mkdir();
         }
@@ -267,10 +274,7 @@ public class RecreateSensorData extends Activity {
     }
 
 
-
-
-
-    public String readSensorFile () {
+    public String readSensorFile() {
 
 
         File file = new File(outputDir + outputFile);
@@ -286,13 +290,12 @@ public class RecreateSensorData extends Activity {
                 readData.append('\n');
             }
             br.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
 
         }
 
         //Con
-        data =  readData.toString();
+        data = readData.toString();
 
 
         return data;
@@ -302,10 +305,8 @@ public class RecreateSensorData extends Activity {
 
     /**
      * @author Nick Davies
-     *
      */
-    void writeDataToGraph()
-    {
+    void writeDataToGraph() {
         File file = new File(outputDir + outputFile);
         String data = "";
 
@@ -314,39 +315,29 @@ public class RecreateSensorData extends Activity {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
 
-            if(fileBuffer == null)
+            if (fileBuffer == null)
                 fileBuffer = new ArrayList<GraphViewWrapper>();
 
-            try
-            {
+            try {
                 while ((line = br.readLine()) != null) {
 
                     int yVal = Integer.parseInt(line);
 
                     if (yVal > 0 && yVal < 1000)
                         fileBuffer.add(new GraphViewWrapper(++xVal, yVal));
-//                    if (yVal < 1000 && yVal > 0) {
-//                        if (graphViewWrapperList.size() > 20)
-//                            graphViewWrapperList.remove(0);
-//                        graphViewWrapperList.add(new GraphViewWrapper(++xVal, yVal));
-//
-//                        liveGraph.resetData(graphViewWrapperList.toArray(new GraphViewWrapper[0]));
-//                    }
+
                 }
                 br.close();
-            }
-            catch(IOException e)
-            {
+            } catch (IOException e) {
 
             }
-        }
-        catch(FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
 
         }
 
     }
-    private class TestAsyncTask extends AsyncTask<Void, String, Void>{
+
+    private class TestAsyncTask extends AsyncTask<Void, String, Void> {
 
         private final int MAX_BEFORE_SCROLL = 20;
         /**
@@ -355,15 +346,13 @@ public class RecreateSensorData extends Activity {
         private ArrayList<GraphViewWrapper> graphViewWrapperList = new ArrayList<GraphViewWrapper>();
 
 
-
         @Override
         protected Void doInBackground(Void... paramses) {
 
 
-            while(true)
-            {
+            while (true) {
                 // Check if our buffer is empty and stop if it is
-                if(fileBuffer.size() <= 0)
+                if (fileBuffer.size() <= 0)
                     break;
 
                 // Get the top of the buffer left to process
@@ -371,22 +360,20 @@ public class RecreateSensorData extends Activity {
                 // Then remove it so we no longer add it on
                 fileBuffer.remove(0);
 
-                int yVal = (int)temp.getY();
+                int yVal = (int) temp.getY();
 
                 // If we've already hit the 20 limit, need to pop first, shift all others back by 1
-                if(graphViewWrapperList.size() == MAX_BEFORE_SCROLL)
-                {
+                if (graphViewWrapperList.size() == MAX_BEFORE_SCROLL) {
                     // Pop the first one off
                     graphViewWrapperList.remove(0);
                 }
 
                 // Add one to the end, X value is irrelevant here
-                graphViewWrapperList.add(new GraphViewWrapper(graphViewWrapperList.size(), (int)temp.getY()));
+                graphViewWrapperList.add(new GraphViewWrapper(graphViewWrapperList.size(), (int) temp.getY()));
 
                 // Loop over all of them, from 1 to X, set the X value of each to I so we're always drawing a graph
-                for (int i = 0; i < graphViewWrapperList.size(); i++)
-                {
-                    if(graphViewWrapperList.get(i).getX() != i)
+                for (int i = 0; i < graphViewWrapperList.size(); i++) {
+                    if (graphViewWrapperList.get(i).getX() != i)
                         graphViewWrapperList.get(i).setX(i);
                 }
 
@@ -394,10 +381,8 @@ public class RecreateSensorData extends Activity {
 
                 // Attempt the sleep for 1 second
                 try {
-                    Thread.sleep(250, 0);
-                }
-                catch (InterruptedException e)
-                {
+                    Thread.sleep(50, 0);
+                } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
 
@@ -405,7 +390,6 @@ public class RecreateSensorData extends Activity {
 
             return null;
         }
-
 
 
         @Override

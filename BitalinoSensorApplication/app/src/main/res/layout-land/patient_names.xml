@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/background"
-    android:weightSum="1">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
 
-    <TextView
-        android:layout_width="match_parent"
+    <EditText android:id="@+id/search"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Search products.."
+        android:inputType="textVisiblePassword"/>
+
+    <!-- List View -->
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="Patient Names"
-        android:textSize="20sp"/>
-    <Button
-        android:layout_width="134dp"
-        android:layout_height="match_parent"
-        android:id="@+id/btnBack"
-        android:text="Back" />
+        android:id="@+id/patient_Names">
 
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-android:orientation="vertical"
-android:layout_width="wrap_content"
-android:layout_height="match_parent"
-android:id="@+id/patient_Names">
+    </ListView>
 
-</ListView>
-
-
-    </LinearLayout>
+</LinearLayout>

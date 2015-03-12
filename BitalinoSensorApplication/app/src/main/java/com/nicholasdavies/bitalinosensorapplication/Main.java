@@ -24,8 +24,6 @@ public class Main extends FragmentActivity {
         viewPager.setAdapter(padapter);
 
 
-
-
     }
 
 

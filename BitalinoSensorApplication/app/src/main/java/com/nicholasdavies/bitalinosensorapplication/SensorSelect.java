@@ -1,37 +1,37 @@
 
 package com.nicholasdavies.bitalinosensorapplication;
 
-        import java.io.BufferedReader;
-        import java.io.InputStream;
-        import java.io.InputStreamReader;
-        import java.io.Serializable;
-        import java.lang.reflect.Constructor;
-        import java.util.ArrayList;
-        import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 
 
-        import org.apache.http.HttpEntity;
-        import org.apache.http.HttpResponse;
-        import org.apache.http.client.HttpClient;
-        import org.apache.http.client.methods.HttpPost;
-        import org.apache.http.impl.client.DefaultHttpClient;
-        import org.json.JSONArray;
-        import org.json.JSONObject;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-        import android.app.Activity;
-        import android.content.Intent;
-        import android.os.Bundle;
-        import android.os.StrictMode;
-        import android.util.Log;
-        import android.view.View;
-        import android.widget.Adapter;
-        import android.widget.AdapterView;
-        import android.widget.ArrayAdapter;
-        import android.widget.Button;
-        import android.widget.ListView;
-        import android.widget.TextView;
-        import android.widget.Spinner;
-        import android.widget.Toast;
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
+import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 public class SensorSelect extends Activity implements Serializable {
     /**
@@ -40,7 +40,7 @@ public class SensorSelect extends Activity implements Serializable {
 
     private static int lastArbitraryData = 0;
 
-    private class ListObject  {
+    private class ListObject {
         private ListObject(Integer arbitraryDataA, String arbitraryDataB) {
             this.arbitraryDataA = arbitraryDataA;
             this.arbitraryDataB = arbitraryDataB;
@@ -95,18 +95,15 @@ public class SensorSelect extends Activity implements Serializable {
 
     public void setupDropDown() {
         Spinner dropdown = (Spinner) findViewById(R.id.spinner1);
-        String[] dropdownitems = new String[]{"Choose Sensor","EMG", "ECG", "EDA"};
+        String[] dropdownitems = new String[]{"Choose Sensor", "EMG", "ECG", "EDA"};
         ArrayAdapter<String> dropDownAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dropdownitems);
         dropdown.setAdapter(dropDownAdapter);
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0)
-                {
+                if (i == 0) {
                     noSensor = true;
-                }
-                else
-                {
+                } else {
                     noSensor = false;
                     sensorType = i;
 
@@ -183,36 +180,23 @@ public class SensorSelect extends Activity implements Serializable {
         resultView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (noSensor)
-                {
+                if (noSensor) {
 
                     Toast.makeText(adapterView.getContext(), "You have not selected a sensor", Toast.LENGTH_SHORT).show();
 
-                }
-                else
-                {
+                } else {
                     ListObject item = (ListObject) resultView.getItemAtPosition(i);
                     Intent intent = new Intent(getApplicationContext(), RecordPatientSensorData.class);
 
 
                     Bundle extras = new Bundle();
 
-                   extras.putInt("sensorType",sensorType);
-                   extras.putInt("PatientID", item.getArbitraryDataA());
-                   intent.putExtras(extras);
+                    extras.putInt("sensorType", sensorType);
+                    extras.putInt("PatientID", item.getArbitraryDataA());
+                    intent.putExtras(extras);
                     startActivity(intent);
 
                 }
-
-
-
-
-
-
-
-
-
-
 
             }
         });

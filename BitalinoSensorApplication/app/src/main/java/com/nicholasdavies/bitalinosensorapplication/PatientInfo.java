@@ -39,12 +39,12 @@ public class PatientInfo extends Activity {
     Button bEdit, bSensorData, bBack;
 
 
-
     TextView firstName, lastName, dateOfBirth, patientSymptoms;
 
 
     InputStream isr = null;
     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,63 +66,56 @@ public class PatientInfo extends Activity {
 
         getData();
 
-        bBack.setOnClickListener(new View.OnClickListener(){
+        bBack.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
 
 
-
-                Intent openStartingPoint = new Intent(getApplicationContext(),PatientNames.class);
+                Intent openStartingPoint = new Intent(getApplicationContext(), PatientNames.class);
                 startActivity(openStartingPoint);
 
             }
         });
 
-        bEdit.setOnClickListener(new View.OnClickListener(){
+        bEdit.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-
 
 
                 Intent patientIdIntent = getIntent();
                 int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
-                Intent openStartingPoint = new Intent(getApplicationContext(),PatientEditInfo.class);
-                openStartingPoint.putExtra("PatientID",PatientID);
+                Intent openStartingPoint = new Intent(getApplicationContext(), PatientEditInfo.class);
+                openStartingPoint.putExtra("PatientID", PatientID);
                 startActivity(openStartingPoint);
 
             }
         });
 
-        bSensorData.setOnClickListener(new View.OnClickListener(){
+        bSensorData.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
 
 
-
                 Intent patientIdIntent = getIntent();
                 int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
-                Intent openStartingPoint = new Intent(getApplicationContext(),ListPatientSensorData.class);
-                openStartingPoint.putExtra("PatientID",PatientID);
+                Intent openStartingPoint = new Intent(getApplicationContext(), ListPatientSensorData.class);
+                openStartingPoint.putExtra("PatientID", PatientID);
                 startActivity(openStartingPoint);
 
             }
         });
-
-
-
 
 
     }
 
 
-       public void getData() {
-           String result = "";
-           InputStream isr = null;
+    public void getData() {
+        String result = "";
+        InputStream isr = null;
 
 
-
-           Intent patientIdIntent = getIntent();
-           int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
+        Intent patientIdIntent = getIntent();
+        int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
         nameValuePairs.add(new BasicNameValuePair("patientID", String.valueOf(PatientID)));
 
         try {
@@ -134,7 +127,6 @@ public class PatientInfo extends Activity {
             isr = entity.getContent();
 
 
-
         } catch (ClientProtocolException e) {
             Log.e("ClientProtocal", "Log_tag");
             e.printStackTrace();
@@ -142,7 +134,6 @@ public class PatientInfo extends Activity {
             Log.e("Log_tag", "IOException");
             e.printStackTrace();
         }
-
 
 
         try {
@@ -179,21 +170,8 @@ public class PatientInfo extends Activity {
             Log.e("log_tag", "Error Parsing Data " + e.toString());
         }
 
-       }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
+
+
+}
 

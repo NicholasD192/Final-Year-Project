@@ -3,6 +3,8 @@ package com.nicholasdavies.bitalinosensorapplication;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -40,9 +42,7 @@ public class PatientEditInfo extends Activity {
 
     TextView firstName, lastName, dateOfBirth, patientSymptoms;
 
-
-
-
+    boolean firstNameCheck, lastNameCheck, dateCheck;
 
 
     InputStream isr = null;
@@ -50,15 +50,12 @@ public class PatientEditInfo extends Activity {
     int patientID = 0;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_editinfo);
-
 
 
         firstName = (EditText) findViewById(R.id.firstName);
@@ -78,73 +75,137 @@ public class PatientEditInfo extends Activity {
 
         getData();
 
-        bBack.setOnClickListener(new View.OnClickListener(){
+        firstName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                if (firstName.getText().toString().length() == 0) {
+                    firstName.setError("First Name is required!");
+                    firstNameCheck = true;
+                } else
+                    firstNameCheck = false;
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        lastName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                if (lastName.getText().toString().length() == 0) {
+                    lastName.setError("First Name is required!");
+                    lastNameCheck = true;
+                } else
+                    lastNameCheck = false;
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        dateOfBirth.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                if (dateOfBirth.getText().toString().length() == 0) {
+                    dateOfBirth.setError("First Name is required!");
+                    dateCheck = true;
+                } else
+                    dateCheck = false;
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        bBack.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
 
-                Intent openStartingPoint = new Intent(getApplicationContext(),PatientNames.class);
+                Intent openStartingPoint = new Intent(getApplicationContext(), PatientNames.class);
                 startActivity(openStartingPoint);
 
 
-
             }
         });
 
-        bUploadEdit.setOnClickListener(new View.OnClickListener(){
+        bUploadEdit.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
 
+//                if (!firstNameCheck || !lastNameCheck || !dateCheck) {
+
+                String firstname = "" + firstName.getText().toString();
+                String lastname = "" + lastName.getText().toString();
+                String dateofbirth = "" + dateOfBirth.getText().toString();
+                String symptoms = "" + patientSymptoms.getText().toString();
+
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 
 
-                    String firstname = "" + firstName.getText().toString();
-                    String lastname = "" + lastName.getText().toString();
-                    String dateofbirth = "" + dateOfBirth.getText().toString();
-                    String symptoms = "" + patientSymptoms.getText().toString();
+                nameValuePairs.add(new BasicNameValuePair("patientID", String.valueOf(patientID)));
+                nameValuePairs.add(new BasicNameValuePair("firstname", firstname));
+                nameValuePairs.add(new BasicNameValuePair("lastname", lastname));
+                nameValuePairs.add(new BasicNameValuePair("dateofbirth", dateofbirth));
+                nameValuePairs.add(new BasicNameValuePair("symptoms", symptoms));
 
-                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+                //Actually connecting to the server
+                try {
+                    HttpClient httpclient = new DefaultHttpClient();
+                    HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/editpatient.php"); //YOUR PHP SCRIPT ADDRESS
+                    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                    HttpResponse response = httpclient.execute(httppost);
+                    HttpEntity entity = response.getEntity();
+                    isr = entity.getContent();
 
+                    String msg = "Data Edited Successfully";
+                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
 
-                    nameValuePairs.add(new BasicNameValuePair("patientID", String.valueOf(patientID)));
-                    nameValuePairs.add(new BasicNameValuePair("firstname", firstname));
-                    nameValuePairs.add(new BasicNameValuePair("lastname", lastname));
-                    nameValuePairs.add(new BasicNameValuePair("dateofbirth", dateofbirth));
-                    nameValuePairs.add(new BasicNameValuePair("symptoms", symptoms));
+                    Intent patientIdIntent = getIntent();
+                    int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
+                    Intent openStartingPoint = new Intent(getApplicationContext(), PatientInfo.class);
+                    openStartingPoint.putExtra("PatientID", PatientID);
+                    startActivity(openStartingPoint);
 
-                    //Actually connecting to the server
-                    try {
-                        HttpClient httpclient = new DefaultHttpClient();
-                        HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/editpatient.php"); //YOUR PHP SCRIPT ADDRESS
-                        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                        HttpResponse response = httpclient.execute(httppost);
-                        HttpEntity entity = response.getEntity();
-                        isr = entity.getContent();
-
-                        String msg = "Data Edited Successfully";
-                        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-
-                        Intent patientIdIntent = getIntent();
-                        int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
-                        Intent openStartingPoint = new Intent(getApplicationContext(),PatientInfo.class);
-                        openStartingPoint.putExtra("PatientID",PatientID);
-                        startActivity(openStartingPoint);
-
-                    } catch (ClientProtocolException e) {
-                        Log.e("ClientProtocal", "Log_tag");
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        Log.e("Log_tag", "IOException");
-                        e.printStackTrace();
-                    }
-
-
-
-
-
+                } catch (ClientProtocolException e) {
+                    Log.e("ClientProtocal", "Log_tag");
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    Log.e("Log_tag", "IOException");
+                    e.printStackTrace();
+                }
+//                } else
+//                {
+//                    Toast.makeText(getApplicationContext(), "Invalid Input", Toast.LENGTH_LONG).show();
+//                }
 
 
             }
         });
-
 
 
     }
@@ -153,8 +214,6 @@ public class PatientEditInfo extends Activity {
     public void getData() {
         String result = "";
         InputStream isr = null;
-
-
 
 
         nameValuePairs.add(new BasicNameValuePair("patientID", String.valueOf(patientID)));
@@ -174,7 +233,6 @@ public class PatientEditInfo extends Activity {
             Log.e("Log_tag", "IOException");
             e.printStackTrace();
         }
-
 
 
         try {
@@ -212,19 +270,6 @@ public class PatientEditInfo extends Activity {
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

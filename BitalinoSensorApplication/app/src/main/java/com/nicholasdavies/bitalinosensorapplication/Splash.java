@@ -16,14 +16,14 @@ public class Splash extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.splash);
-        Thread timer = new Thread(){
-            public void run(){
+        Thread timer = new Thread() {
+            public void run() {
                 try {
                     sleep(500);
-                } catch (InterruptedException e){
+                } catch (InterruptedException e) {
                     e.printStackTrace();
 
-                }finally {
+                } finally {
                     Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
                     startActivity(openStartingPoint);
                 }

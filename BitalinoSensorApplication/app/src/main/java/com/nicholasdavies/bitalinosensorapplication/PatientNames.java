@@ -21,12 +21,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +41,7 @@ public class PatientNames extends Activity implements Serializable {
 
     private static int lastArbitraryData = 0;
 
-    private class ListObject  {
+    private class ListObject {
         private ListObject(Integer arbitraryDataA, String arbitraryDataB) {
             this.arbitraryDataA = arbitraryDataA;
             this.arbitraryDataB = arbitraryDataB;
@@ -68,8 +71,8 @@ public class PatientNames extends Activity implements Serializable {
     List<ListObject> patientnames;
     TextView error;
     ListView resultView;
-
     Button bBack;
+    EditText search;
 
 
     @Override
@@ -79,21 +82,39 @@ public class PatientNames extends Activity implements Serializable {
         StrictMode.enableDefaults(); //STRICT MODE ENABLE
         patientnames = new ArrayList<ListObject>();
         ListView resultView = (ListView) findViewById(R.id.patient_Names);
+        EditText search = (EditText) findViewById(R.id.search);
 
         Button bBack = (Button) findViewById(R.id.btnBack);
 
         getData();
         onClickList();
 
-        ArrayAdapter<ListObject> myadapter = new ArrayAdapter<ListObject>(this, R.layout.patient_list_item, R.id.label, patientnames);
+        final ArrayAdapter<ListObject> myadapter = new ArrayAdapter<ListObject>(this, R.layout.patient_list_item, R.id.label, patientnames);
         resultView.setAdapter(myadapter);
 
-        bBack.setOnClickListener(new View.OnClickListener(){
+/*        bBack.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View arg0) {
 
                 Intent openStartingPoint = new Intent(getApplicationContext(),Main.class);
                 startActivity(openStartingPoint);
+
+            }
+        });*/
+
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                myadapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
 
             }
         });
@@ -165,14 +186,10 @@ public class PatientNames extends Activity implements Serializable {
 
                 ListObject item = (ListObject) resultView.getItemAtPosition(i);
 
-                PatientNamesIntent.putExtra("PatientID",item.getArbitraryDataA());
-
-
-
+                PatientNamesIntent.putExtra("PatientID", item.getArbitraryDataA());
 
 
                 startActivity(PatientNamesIntent);
-
 
 
             }

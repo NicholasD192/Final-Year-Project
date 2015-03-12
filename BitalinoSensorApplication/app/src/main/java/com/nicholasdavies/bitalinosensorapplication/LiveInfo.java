@@ -60,14 +60,12 @@ public class LiveInfo extends Activity {
     String outputFile = "myData.txt";
 
 
-
-    private class GraphViewWrapper implements GraphViewDataInterface{
+    private class GraphViewWrapper implements GraphViewDataInterface {
 
         private int mX = 0;
         private int mY = 0;
 
-        public GraphViewWrapper(int x, int y)
-        {
+        public GraphViewWrapper(int x, int y) {
             System.out.println("X: " + x + "| Y: " + y);
             mX = x;
             mY = y;
@@ -108,15 +106,14 @@ public class LiveInfo extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.live_info);
         StrictMode.enableDefaults(); //STRICT MODE ENABLED
-        liveGraph = new GraphViewSeries(new GraphView.GraphViewData[] {});
+        liveGraph = new GraphViewSeries(new GraphView.GraphViewData[]{});
         bCancel = (Button) findViewById(R.id.btnCancel);
-
 
 
         graphViewWrapperList = new ArrayList<GraphViewWrapper>();
 
         final TestAsyncTask MySyncTask = new TestAsyncTask();
-        bCancel.setOnClickListener(new View.OnClickListener(){
+        bCancel.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
 
@@ -127,7 +124,7 @@ public class LiveInfo extends Activity {
             }
         });
 
-        GraphView graphView = new LineGraphView(this,"Patient Data");
+        GraphView graphView = new LineGraphView(this, "Patient Data");
         graphView.setScrollable(true);
         graphView.addSeries(liveGraph);
         graphView.setDisableTouch(false);
@@ -140,20 +137,17 @@ public class LiveInfo extends Activity {
         layout.addView(graphView);
 
         if (!testInitiated)
-             MySyncTask.execute();
+            MySyncTask.execute();
     }
 
 
-
-
-    private class TestAsyncTask extends AsyncTask<Void, String, Void>{
+    private class TestAsyncTask extends AsyncTask<Void, String, Void> {
         ArrayAdapter<String> adapter;
         private BluetoothDevice dev = null;
         private BluetoothSocket sock = null;
         private InputStream is = null;
         private OutputStream os = null;
         private BITalinoDevice bitalino;
-
 
 
         // ArrayAdapter<String> adapter = new ArrayAdapter<String>()
@@ -181,7 +175,7 @@ public class LiveInfo extends Activity {
 
                 // get BITalino version
                 publishProgress("Version: " + bitalino.version());
-               // publishProgress("Analogue Value" + );
+                // publishProgress("Analogue Value" + );
 
                 // start acquisition on predefined analog channels
                 bitalino.start();
@@ -212,9 +206,6 @@ public class LiveInfo extends Activity {
                     for (BITalinoFrame frame : frames)
                         //publishProgress(frame.toString());
                         publishProgress(Integer.toString(frame.getAnalog(0)));
-
-
-
 
 
                     counter++;
@@ -253,31 +244,26 @@ public class LiveInfo extends Activity {
         protected void onProgressUpdate(String... values) {
 
             //liveGraph.appendData/new GraphView.GraphViewData(xVal++, Integer.parseInt(values[0])));
-            if(values.length > 0) {
-                try{
-                    try
-                    {
+            if (values.length > 0) {
+                try {
+                    try {
                         PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputDir + outputFile, true)));
                         out.println(values[0]);
                         out.close();
-                    }
-                    catch(IOException e)
-                    {
+                    } catch (IOException e) {
 
                     }
 
                     int yVal = Integer.parseInt(values[0]);
 
-                    if(yVal < 1000 && yVal > 0) {
-                        if(graphViewWrapperList.size() > 20)
+                    if (yVal < 1000 && yVal > 0) {
+                        if (graphViewWrapperList.size() > 20)
                             graphViewWrapperList.remove(0);
                         graphViewWrapperList.add(new GraphViewWrapper(++xVal, yVal));
 
                         liveGraph.resetData(graphViewWrapperList.toArray(new GraphViewWrapper[0]));
                     }
-                }
-                catch(NumberFormatException e)
-                {
+                } catch (NumberFormatException e) {
 
                 }
             }

@@ -42,7 +42,7 @@ public class ListPatientSensorData extends Activity implements Serializable {
     private static int lastArbitraryData = 0;
     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 
-    private class ListObject  {
+    private class ListObject {
         private ListObject(Integer arbitraryDataA, String arbitraryDataB) {
             this.arbitraryDataA = arbitraryDataA;
             this.arbitraryDataB = arbitraryDataB;
@@ -92,11 +92,11 @@ public class ListPatientSensorData extends Activity implements Serializable {
         ArrayAdapter<ListObject> myadapter = new ArrayAdapter<ListObject>(this, R.layout.patient_list_item, R.id.label, patientnames);
         resultView.setAdapter(myadapter);
 
-        bBack.setOnClickListener(new View.OnClickListener(){
+        bBack.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
 
-                Intent openStartingPoint = new Intent(getApplicationContext(),Main.class);
+                Intent openStartingPoint = new Intent(getApplicationContext(), Main.class);
                 startActivity(openStartingPoint);
 
             }
@@ -153,25 +153,20 @@ public class ListPatientSensorData extends Activity implements Serializable {
                 sensorType = "" + json.getString("SensorType");
 
 
-
-
                 id = Integer.parseInt(sensorType);
 
-                if (id == 1)
-                {
+                if (id == 1) {
                     sensorTypeString = "EMG";
                 }
-                if (id == 2)
-                {
+                if (id == 2) {
                     sensorTypeString = "ECG";
                 }
-                if (id ==3)
-                {
-                    sensorTypeString =  "EDA";
+                if (id == 3) {
+                    sensorTypeString = "EDA";
                 }
 
 
-                s = "Date:" + json.getString("Date") +" Sensor Type: " +sensorTypeString + "\n";
+                s = "Date:" + json.getString("Date") + " Sensor Type: " + sensorTypeString + "\n";
 
                 sensorDataID = json.getString("SensorDataID");
                 intsensorDataID = Integer.parseInt(sensorDataID);
@@ -199,14 +194,10 @@ public class ListPatientSensorData extends Activity implements Serializable {
 
                 ListObject item = (ListObject) resultView.getItemAtPosition(i);
 
-                SensorIDintent.putExtra("SensordataID",item.getArbitraryDataA());
-
-
-
+                SensorIDintent.putExtra("SensordataID", item.getArbitraryDataA());
 
 
                 startActivity(SensorIDintent);
-
 
 
             }

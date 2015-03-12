@@ -77,17 +77,12 @@ public class RecordPatientSensorData extends Activity {
     InputStream isr = null;
 
 
-
-
-
-
-    private class GraphViewWrapper implements GraphViewDataInterface{
+    private class GraphViewWrapper implements GraphViewDataInterface {
 
         private int mX = 0;
         private int mY = 0;
 
-        public GraphViewWrapper(int x, int y)
-        {
+        public GraphViewWrapper(int x, int y) {
             System.out.println("X: " + x + "| Y: " + y);
             mX = x;
             mY = y;
@@ -128,7 +123,7 @@ public class RecordPatientSensorData extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record_patient_sensor_data);
         StrictMode.enableDefaults(); //STRICT MODE ENABLED
-        liveGraph = new GraphViewSeries(new GraphView.GraphViewData[] {});
+        liveGraph = new GraphViewSeries(new GraphView.GraphViewData[]{});
         bCancel = (Button) findViewById(R.id.btnCancel);
         bUpload = (Button) findViewById(R.id.btnUpload);
         Intent intent = getIntent();
@@ -140,18 +135,13 @@ public class RecordPatientSensorData extends Activity {
         Toast.makeText(getApplicationContext(), "Connecting to the Bitalino Device", Toast.LENGTH_LONG).show();
 
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
-            final String dateFormatted = date.format(c.getTime());
-
-
-
-
-
+        final String dateFormatted = date.format(c.getTime());
 
 
         graphViewWrapperList = new ArrayList<GraphViewWrapper>();
 
         final TestAsyncTask MySyncTask = new TestAsyncTask();
-        bCancel.setOnClickListener(new View.OnClickListener(){
+        bCancel.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
 
@@ -163,14 +153,14 @@ public class RecordPatientSensorData extends Activity {
 
         });
 
-        bUpload.setOnClickListener(new View.OnClickListener(){
+        bUpload.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
 
                 MySyncTask.cancel(true);
 
 
-                String sensorData =  readSensorFile();
+                String sensorData = readSensorFile();
 
 
                 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
@@ -179,7 +169,7 @@ public class RecordPatientSensorData extends Activity {
                 nameValuePairs.add(new BasicNameValuePair("date", dateFormatted));
                 nameValuePairs.add(new BasicNameValuePair("sensorfilename", sensorData));
                 nameValuePairs.add(new BasicNameValuePair("sensortype", Integer.toString(sensorType)));
-                nameValuePairs.add(new BasicNameValuePair("notes",Notes));
+                nameValuePairs.add(new BasicNameValuePair("notes", Notes));
 
                 //Actually connecting to the server
                 try {
@@ -192,7 +182,7 @@ public class RecordPatientSensorData extends Activity {
 
                     String msg = "Data Entered Successfully Returning to Main Menu";
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-                    Thread thread = new Thread(){
+                    Thread thread = new Thread() {
                         @Override
                         public void run() {
                             try {
@@ -227,8 +217,7 @@ public class RecordPatientSensorData extends Activity {
         });
 
 
-
-        GraphView graphView = new LineGraphView(this,"Patient Data");
+        GraphView graphView = new LineGraphView(this, "Patient Data");
         graphView.setScrollable(true);
         graphView.addSeries(liveGraph);
         graphView.setDisableTouch(false);
@@ -244,7 +233,7 @@ public class RecordPatientSensorData extends Activity {
             MySyncTask.execute();
     }
 
-    public String readSensorFile () {
+    public String readSensorFile() {
 
 
         File file = new File(outputDir + outputFile);
@@ -260,13 +249,12 @@ public class RecordPatientSensorData extends Activity {
                 readData.append('\n');
             }
             br.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
 
         }
 
-       //Con
-       data =  readData.toString();
+        //Con
+        data = readData.toString();
 
 
         return data;
@@ -274,16 +262,13 @@ public class RecordPatientSensorData extends Activity {
     }
 
 
-
-
-    private class TestAsyncTask extends AsyncTask<Void, String, Void>{
+    private class TestAsyncTask extends AsyncTask<Void, String, Void> {
         ArrayAdapter<String> adapter;
         private BluetoothDevice dev = null;
         private BluetoothSocket sock = null;
         private InputStream is = null;
         private OutputStream os = null;
         private BITalinoDevice bitalino;
-
 
 
         // ArrayAdapter<String> adapter = new ArrayAdapter<String>()
@@ -305,12 +290,12 @@ public class RecordPatientSensorData extends Activity {
                 testInitiated = true;
 
                 bitalino = new BITalinoDevice(10, new int[]{0});
-              //  publishProgress("Connecting to BITalino [" + remoteDevice + "]..");
+                //  publishProgress("Connecting to BITalino [" + remoteDevice + "]..");
                 bitalino.open(sock.getInputStream(), sock.getOutputStream());
-               // publishProgress("Connected.");
+                // publishProgress("Connected.");
 
                 // get BITalino version
-               // publishProgress("Version: " + bitalino.version());
+                // publishProgress("Version: " + bitalino.version());
                 // publishProgress("Analogue Value" + );
 
                 // start acquisition on predefined analog channels
@@ -342,9 +327,6 @@ public class RecordPatientSensorData extends Activity {
                     for (BITalinoFrame frame : frames)
                         //publishProgress(frame.toString());
                         publishProgress(Integer.toString(frame.getAnalog(0)));
-
-
-
 
 
                     counter++;
@@ -384,30 +366,25 @@ public class RecordPatientSensorData extends Activity {
         @Override
         protected void onProgressUpdate(String... values) {
 
-            if(values.length > 0) {
-                try{
-                    try
-                    {
+            if (values.length > 0) {
+                try {
+                    try {
                         PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputDir + outputFile, true)));
                         out.println(values[0]);
                         out.close();
-                    }
-                    catch(IOException e)
-                    {
+                    } catch (IOException e) {
 
                     }
 
                     int yVal = Integer.parseInt(values[0]);
 
-                    if(yVal < 1000 && yVal > 0) {
-                        if(graphViewWrapperList.size() > 20)
+                    if (yVal < 1000 && yVal > 0) {
+                        if (graphViewWrapperList.size() > 20)
                             graphViewWrapperList.remove(0);
                         graphViewWrapperList.add(new GraphViewWrapper(++xVal, yVal));
                         liveGraph.resetData(graphViewWrapperList.toArray(new GraphViewWrapper[0]));
                     }
-                }
-                catch(NumberFormatException e)
-                {
+                } catch (NumberFormatException e) {
 
                 }
             }

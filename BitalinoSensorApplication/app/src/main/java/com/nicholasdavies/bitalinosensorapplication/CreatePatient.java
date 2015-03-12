@@ -2,8 +2,11 @@ package com.nicholasdavies.bitalinosensorapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -24,6 +27,8 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,9 +38,11 @@ import java.util.List;
  */
 public class CreatePatient extends Activity {
 
-    EditText firstName, lastName,dateOfBirth,patientSymptoms;
+    EditText firstName, lastName, dateOfBirth, patientSymptoms;
 
     Button bCreate, bCancel;
+
+    boolean firstNameCheck, lastNameCheck, dateCheck;
 
 
     @Override
@@ -57,62 +64,131 @@ public class CreatePatient extends Activity {
 
         bCreate = (Button) findViewById(R.id.btnSubmit);
 
-        bCancel.setOnClickListener(new View.OnClickListener(){
+        bCancel.setOnClickListener(new View.OnClickListener() {
 
-                public void onClick(View arg0) {
+            public void onClick(View arg0) {
 
-                    Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
-                    startActivity(openStartingPoint);
+                Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
+                startActivity(openStartingPoint);
 
-                }
+            }
         });
 
         bCreate.setOnClickListener(new View.OnClickListener() {
-
-
-
-
-
             InputStream isr = null;
 
-
-            //Setting up the onClick for the submit button.
             public void onClick(View arg0) {
-                String firstname = "" + firstName.getText().toString();
-                String lastname = "" + lastName.getText().toString();
-                String dateofbirth = "" + dateOfBirth.getText().toString();
-                String symptoms = "" + patientSymptoms.getText().toString();
-
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 
 
-                nameValuePairs.add(new BasicNameValuePair("firstname", firstname));
-                nameValuePairs.add(new BasicNameValuePair("lastname", lastname));
-                nameValuePairs.add(new BasicNameValuePair("dateofbirth", dateofbirth));
-                nameValuePairs.add(new BasicNameValuePair("symptoms", symptoms));
+                if (!firstNameCheck || !lastNameCheck || !dateCheck) {
+                    String firstname = "" + firstName.getText().toString();
+                    String lastname = "" + lastName.getText().toString();
+                    String dateofbirth = "" + dateOfBirth.getText().toString();
+                    String symptoms = "" + patientSymptoms.getText().toString();
 
-                //Actually connecting to the server
-                try {
-                    HttpClient httpclient = new DefaultHttpClient();
-                    HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/createnewpatient.php"); //YOUR PHP SCRIPT ADDRESS
-                    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-                    HttpResponse response = httpclient.execute(httppost);
-                    HttpEntity entity = response.getEntity();
-                    isr = entity.getContent();
+                    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 
-                    String msg = "Data Entered Successfully";
-                    Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-                } catch (ClientProtocolException e) {
-                    Log.e("ClientProtocal", "Log_tag");
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    Log.e("Log_tag", "IOException");
-                    e.printStackTrace();
+
+                    nameValuePairs.add(new BasicNameValuePair("firstname", firstname));
+                    nameValuePairs.add(new BasicNameValuePair("lastname", lastname));
+                    nameValuePairs.add(new BasicNameValuePair("dateofbirth", dateofbirth));
+                    nameValuePairs.add(new BasicNameValuePair("symptoms", symptoms));
+
+                    //Actually connecting to the server
+                    try {
+                        HttpClient httpclient = new DefaultHttpClient();
+                        HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/createnewpatient.php"); //YOUR PHP SCRIPT ADDRESS
+                        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                        HttpResponse response = httpclient.execute(httppost);
+                        HttpEntity entity = response.getEntity();
+                        isr = entity.getContent();
+
+                        String msg = "Data Entered Successfully";
+                        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+                    } catch (ClientProtocolException e) {
+                        Log.e("ClientProtocal", "Log_tag");
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        Log.e("Log_tag", "IOException");
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(arg0.getContext(), "Input is invalid", Toast.LENGTH_SHORT).show();
                 }
 
 
             }
         });
+
+
+        firstName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                if (firstName.getText().toString().length() == 0) {
+                    firstName.setError("First Name is required!");
+                    firstNameCheck = true;
+                } else
+                    firstNameCheck = false;
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        lastName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                if (lastName.getText().toString().length() == 0) {
+                    lastName.setError("Last Name is Required!");
+                    lastNameCheck = true;
+                } else
+                    lastNameCheck = false;
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        dateOfBirth.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                if (dateOfBirth.getText().toString().length() == 0) {
+                    dateOfBirth.setError("Date of Birth is required");
+                    dateCheck = true;
+                } else
+                    dateCheck = false;
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
     }
 }
 

@@ -23,7 +23,7 @@ import retrofit.http.PUT;
  */
 public interface ReadingService {
 
-  @PUT("/")
-  Response uploadReading(@Body BITalinoReading reading);
+    @PUT("/")
+    Response uploadReading(@Body BITalinoReading reading);
 
 }

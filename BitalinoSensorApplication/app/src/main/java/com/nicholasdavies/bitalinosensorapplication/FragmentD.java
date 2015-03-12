@@ -12,7 +12,7 @@ import android.widget.ImageButton;
  * Created by Nick Davies on 17/11/2014.
  */
 public class FragmentD extends Fragment {
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceStat){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceStat) {
         return inflater.inflate(R.layout.fragment_d, container, false);
     }
 
