@@ -9,7 +9,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -120,6 +120,16 @@
             android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="com.nicholasdavies.bitalinosensorapplication.PatientEditInfo" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Settings"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="com.nicholasdavies.bitalinosensorapplication.Settings" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

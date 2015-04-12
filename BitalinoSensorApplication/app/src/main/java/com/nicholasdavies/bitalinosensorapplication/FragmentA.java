@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import java.util.Set;
+
 /**
  * Created by Nick Davies on 17/11/2014.
  */
@@ -25,7 +27,7 @@ public class FragmentA extends Fragment {
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(FragmentA.this.getActivity(), LiveInfo.class);
+                Intent intent = new Intent(FragmentA.this.getActivity(), Settings.class);
                 FragmentA.this.startActivity(intent);
 
             }

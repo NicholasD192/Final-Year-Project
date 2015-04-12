@@ -17,7 +17,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -29,6 +29,8 @@ public class PagerAdapter extends FragmentPagerAdapter {
                 return new FragmentC();
             case 2:
                 return new FragmentD();
+            case 3:
+                return new FragmentA();
 
 
             default:

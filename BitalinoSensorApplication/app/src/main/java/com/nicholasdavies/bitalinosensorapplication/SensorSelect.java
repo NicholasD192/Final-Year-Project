@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -176,6 +177,7 @@ public class SensorSelect extends Activity implements Serializable {
 
 
     public void onClickList() {
+        final BluetoothAdapter BluetoothAdapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
         final ListView resultView = (ListView) findViewById(R.id.patient_Names);
         resultView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -184,11 +186,14 @@ public class SensorSelect extends Activity implements Serializable {
 
                     Toast.makeText(adapterView.getContext(), "You have not selected a sensor", Toast.LENGTH_SHORT).show();
 
-                } else {
+                }
+                if (!BluetoothAdapter.isEnabled()) {
+                    Toast.makeText(adapterView.getContext(), "Bluetooth must be enabled to connect to Bitalino Device", Toast.LENGTH_SHORT).show();
+                }
+
+                else {
                     ListObject item = (ListObject) resultView.getItemAtPosition(i);
                     Intent intent = new Intent(getApplicationContext(), RecordPatientSensorData.class);
-
-
                     Bundle extras = new Bundle();
 
                     extras.putInt("sensorType", sensorType);
