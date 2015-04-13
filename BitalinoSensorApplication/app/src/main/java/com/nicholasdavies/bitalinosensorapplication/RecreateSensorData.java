@@ -201,7 +201,8 @@ public class RecreateSensorData extends Activity {
 
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/getsensordata.php"); //YOUR PHP SCRIPT ADDRESS
+            String baseURL = Utilities.getURL(getApplicationContext());
+            HttpPost httppost = new HttpPost(baseURL + "getsensordata.php"); //YOUR PHP SCRIPT ADDRESS
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();

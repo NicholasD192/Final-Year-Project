@@ -1,21 +1,14 @@
 package com.nicholasdavies.bitalinosensorapplication;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * Created by Nick Davies on 12/04/2015.
@@ -33,35 +26,10 @@ public class Settings extends Activity {
         rootIP = (EditText) findViewById(R.id.editIP);
         bUpdate = (Button)  findViewById(R.id.btnUpdate);
         bBack = (Button) findViewById(R.id.btnBack);
-        final String Filename = "current_IP";
-        File file = new File(Filename);
-        if(!file.exists())
-        {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-
-            }
-            // write code for saving data to the file
-        }
-
-        try{
-            FileInputStream fin = openFileInput(Filename);
-            int c;
-            String temp="";
-            while( (c = fin.read()) != -1){
-                temp = temp + Character.toString((char)c);
-            }
-            rootIP.setText(temp);
-            Toast.makeText(getBaseContext(),"file read",
-                    Toast.LENGTH_SHORT).show();
-
-        }catch(Exception e){
-
-        }
 
 
 
+        rootIP.setText(Utilities.getIP(getApplicationContext()));
 
         bBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +44,7 @@ public class Settings extends Activity {
             public void onClick(View view) {
                 String data;
                 data = rootIP.getText().toString();
-                try {
+                /*try {
                     FileOutputStream fOut = openFileOutput(Filename,MODE_WORLD_READABLE);
                     fOut.write(data.getBytes());
                     fOut.close();
@@ -85,7 +53,12 @@ public class Settings extends Activity {
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                }
+                }*/
+
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                prefs.edit().putString("host_ip", data).apply();
+
+
 
 
 

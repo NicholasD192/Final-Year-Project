@@ -126,7 +126,8 @@ public class SensorSelect extends Activity implements Serializable {
         //Actually connecting to the server
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/getpatientnames.php"); //YOUR PHP SCRIPT ADDRESS
+            String baseURL = Utilities.getURL(getApplicationContext());
+            HttpPost httppost = new HttpPost(baseURL + "getpatientnames.php"); //YOUR PHP SCRIPT ADDRESS
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
             isr = entity.getContent();

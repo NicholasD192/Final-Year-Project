@@ -176,7 +176,8 @@ public class PatientEditInfo extends Activity {
                 //Actually connecting to the server
                 try {
                     HttpClient httpclient = new DefaultHttpClient();
-                    HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/editpatient.php"); //YOUR PHP SCRIPT ADDRESS
+                    String baseURL = Utilities.getURL(getApplicationContext());
+                    HttpPost httppost = new HttpPost(baseURL + "editpatient.php"); //YOUR PHP SCRIPT ADDRESS
                     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                     HttpResponse response = httpclient.execute(httppost);
                     HttpEntity entity = response.getEntity();
@@ -220,7 +221,8 @@ public class PatientEditInfo extends Activity {
 
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/getpatientinfo.php"); //YOUR PHP SCRIPT ADDRESS
+            String baseURL = Utilities.getURL(getApplicationContext());
+            HttpPost httppost = new HttpPost(baseURL + "getpatientinfo.php"); //YOUR PHP SCRIPT ADDRESS
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();

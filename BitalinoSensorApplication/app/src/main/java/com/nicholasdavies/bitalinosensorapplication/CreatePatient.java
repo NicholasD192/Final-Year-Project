@@ -97,7 +97,8 @@ public class CreatePatient extends Activity {
                     //Actually connecting to the server
                     try {
                         HttpClient httpclient = new DefaultHttpClient();
-                        HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/createnewpatient.php"); //YOUR PHP SCRIPT ADDRESS
+                        String baseURL = Utilities.getURL(getApplicationContext());
+                        HttpPost httppost = new HttpPost(baseURL + "createnewpatient.php"); //YOUR PHP SCRIPT ADDRESS
                         httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                         HttpResponse response = httpclient.execute(httppost);
                         HttpEntity entity = response.getEntity();

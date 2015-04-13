@@ -114,7 +114,8 @@ public class ListPatientSensorData extends Activity implements Serializable {
         try {
 
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/getpatientsensordatalist.php"); //YOUR PHP SCRIPT ADDRESS
+            String baseURL = Utilities.getURL(getApplicationContext());
+            HttpPost httppost = new HttpPost(baseURL + "getpatientsensordatalist.php"); //YOUR PHP SCRIPT ADDRESS
             httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();

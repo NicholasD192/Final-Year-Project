@@ -92,15 +92,6 @@ public class PatientNames extends Activity implements Serializable {
         final ArrayAdapter<ListObject> myadapter = new ArrayAdapter<ListObject>(this, R.layout.patient_list_item, R.id.label, patientnames);
         resultView.setAdapter(myadapter);
 
-/*        bBack.setOnClickListener(new View.OnClickListener(){
-
-            public void onClick(View arg0) {
-
-                Intent openStartingPoint = new Intent(getApplicationContext(),Main.class);
-                startActivity(openStartingPoint);
-
-            }
-        });*/
 
         search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -127,7 +118,8 @@ public class PatientNames extends Activity implements Serializable {
         //Actually connecting to the server
         try {
             HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/getpatientnames.php"); //YOUR PHP SCRIPT ADDRESS
+            String baseURL = Utilities.getURL(getApplicationContext());
+            HttpPost httppost = new HttpPost(baseURL + "getpatientnames.php"); //YOUR PHP SCRIPT ADDRESS
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
             isr = entity.getContent();
