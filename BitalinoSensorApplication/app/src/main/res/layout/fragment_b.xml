@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageButton2"
 
-        android:background="@drawable/btn1"
+        android:background="@drawable/search_icon"
         android:layout_marginTop="105dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />

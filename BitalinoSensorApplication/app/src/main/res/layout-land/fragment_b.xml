@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@drawable/background">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background"
+    android:weightSum="1">
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="234dp"
+        android:layout_height="190dp"
         android:id="@+id/imageButton2"
+        android:layout_gravity="center"
 
-        android:background="@drawable/btn1"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:background="@drawable/add_icon"
+        android:layout_weight="0.25"
+        android:layout_marginTop="25dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,8 +23,8 @@
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Add New Patient"
+        android:layout_gravity="center"
         android:id="@+id/textView"
-        android:layout_below="@+id/imageButton2"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginTop="20dp" />
 
-</RelativeLayout>
+</LinearLayout>
