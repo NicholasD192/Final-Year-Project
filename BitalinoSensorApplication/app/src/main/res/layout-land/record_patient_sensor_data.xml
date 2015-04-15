@@ -6,42 +6,48 @@
     android:layout_width="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/background"
-
-
     android:weightSum="1">
 
 
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Collecting Sensor Information"
-        android:textSize="20sp"/>
-
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_height="wrap_content"
+        android:layout_height="49dp"
         android:layout_width="wrap_content"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:background="@drawable/background"
-        android:id="@+id/live_graph"
-        android:weightSum="1">
+        android:background="@drawable/background">
 
-
-
-        <Button
-            android:id="@+id/btnCancel"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="5"
-            android:text="Cancel" />
+            android:text="Recording Sensor Data"
+            android:textSize="20sp"/>
+
         <Button
             android:id="@+id/btnUpload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="5"
             android:text="Upload" />
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="Cancel" />
 
     </LinearLayout>
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:background="@drawable/background"
+        android:id="@+id/live_graph">
+
+    </LinearLayout>
+
+
+
 </LinearLayout>
+

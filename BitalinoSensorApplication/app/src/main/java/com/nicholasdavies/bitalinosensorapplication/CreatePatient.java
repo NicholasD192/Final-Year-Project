@@ -64,27 +64,28 @@ public class CreatePatient extends Activity {
 
         bCreate = (Button) findViewById(R.id.btnSubmit);
 
-        bCancel.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View arg0) {
-
-                Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
-                startActivity(openStartingPoint);
-
-            }
-        });
+//        bCancel.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View arg0) {
+//
+//                Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
+//                startActivity(openStartingPoint);
+//
+//            }
+//        });
 
         bCreate.setOnClickListener(new View.OnClickListener() {
             InputStream isr = null;
 
             public void onClick(View arg0) {
 
+                String firstname = "" + firstName.getText().toString();
+                String lastname = "" + lastName.getText().toString();
+                String dateofbirth = "" + dateOfBirth.getText().toString();
+                String symptoms = "" + patientSymptoms.getText().toString();
 
-                if (!firstNameCheck || !lastNameCheck || !dateCheck) {
-                    String firstname = "" + firstName.getText().toString();
-                    String lastname = "" + lastName.getText().toString();
-                    String dateofbirth = "" + dateOfBirth.getText().toString();
-                    String symptoms = "" + patientSymptoms.getText().toString();
+                if (!firstname.equals("") && !lastname.equals("")) {
+
 
                     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 

@@ -17,27 +17,26 @@ public class Settings extends Activity {
 
     Button bUpdate, bBack;
     EditText rootIP;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
 
 
-
         rootIP = (EditText) findViewById(R.id.editIP);
-        bUpdate = (Button)  findViewById(R.id.btnUpdate);
-        bBack = (Button) findViewById(R.id.btnBack);
-
+        bUpdate = (Button) findViewById(R.id.btnUpdate);
+//        bBack = (Button) findViewById(R.id.btnBack);
 
 
         rootIP.setText(Utilities.getIP(getApplicationContext()));
 
-        bBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent openStartingPoint = new Intent(getApplicationContext(), Main.class);
-                startActivity(openStartingPoint);
-            }
-        });
+//        bBack.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent openStartingPoint = new Intent(getApplicationContext(), Main.class);
+//                startActivity(openStartingPoint);
+//            }
+//        });
 
         bUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,18 +58,11 @@ public class Settings extends Activity {
                 prefs.edit().putString("host_ip", data).apply();
 
 
-
-
-
-
-
             }
         });
 
 
     }
-
-
 
 
 }

@@ -14,11 +14,6 @@
         android:layout_height="match_parent"
         android:id="@+id/title"
         android:textSize="20sp"/>
-    <Button
-        android:layout_width="134dp"
-        android:layout_height="match_parent"
-        android:id="@+id/btnBack"
-        android:text="Back" />
 
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"

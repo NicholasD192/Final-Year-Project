@@ -142,16 +142,16 @@ public class PatientEditInfo extends Activity {
             }
         });
 
-        bBack.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View arg0) {
-
-                Intent openStartingPoint = new Intent(getApplicationContext(), PatientNames.class);
-                startActivity(openStartingPoint);
-
-
-            }
-        });
+//        bBack.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View arg0) {
+//
+//                Intent openStartingPoint = new Intent(getApplicationContext(), PatientNames.class);
+//                startActivity(openStartingPoint);
+//
+//
+//            }
+//        });
 
         bUploadEdit.setOnClickListener(new View.OnClickListener() {
 

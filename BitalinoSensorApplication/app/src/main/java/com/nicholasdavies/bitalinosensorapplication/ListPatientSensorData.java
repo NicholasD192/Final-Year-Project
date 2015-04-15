@@ -74,6 +74,7 @@ public class ListPatientSensorData extends Activity implements Serializable {
     ListView resultView;
 
     Button bBack;
+    int x = 0;
 
 
     @Override
@@ -84,25 +85,20 @@ public class ListPatientSensorData extends Activity implements Serializable {
         patientnames = new ArrayList<ListObject>();
         ListView resultView = (ListView) findViewById(R.id.patient_Names);
 
-        Button bBack = (Button) findViewById(R.id.btnBack);
+        // Button bBack = (Button) findViewById(R.id.btnBack);
 
         getData();
         onClickList();
+        if (patientnames.size() == 0) {
+            int intsensorDataID = 0;
+            String s = "No Sensor Data Found ";
+            patientnames.add(new ListObject(intsensorDataID, s));
+        }
 
         ArrayAdapter<ListObject> myadapter = new ArrayAdapter<ListObject>(this, R.layout.patient_list_item, R.id.label, patientnames);
         resultView.setAdapter(myadapter);
-
-        bBack.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View arg0) {
-
-                Intent openStartingPoint = new Intent(getApplicationContext(), Main.class);
-                startActivity(openStartingPoint);
-
-            }
-        });
-
     }
+
 
     public void getData() {
         String result = "";
@@ -147,6 +143,7 @@ public class ListPatientSensorData extends Activity implements Serializable {
             String sensorDataID = "";
             int intsensorDataID;
             int id;
+
             JSONArray jArray = new JSONArray(result);
 
             for (int i = 0; i < jArray.length(); i++) {
@@ -172,7 +169,9 @@ public class ListPatientSensorData extends Activity implements Serializable {
                 sensorDataID = json.getString("SensorDataID");
                 intsensorDataID = Integer.parseInt(sensorDataID);
 
+
                 patientnames.add(new ListObject(intsensorDataID, s));
+
 
             }
 

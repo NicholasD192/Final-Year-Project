@@ -62,20 +62,20 @@ public class PatientInfo extends Activity {
 
         bSensorData = (Button) findViewById(R.id.btnSensorData);
 
-        bBack = (Button) findViewById(R.id.btnBack);
+        // bBack = (Button) findViewById(R.id.btnBack);
 
         getData();
 
-        bBack.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View arg0) {
-
-
-                Intent openStartingPoint = new Intent(getApplicationContext(), PatientNames.class);
-                startActivity(openStartingPoint);
-
-            }
-        });
+//        bBack.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View arg0) {
+//
+//
+//                Intent openStartingPoint = new Intent(getApplicationContext(), PatientNames.class);
+//                startActivity(openStartingPoint);
+//
+//            }
+//        });
 
         bEdit.setOnClickListener(new View.OnClickListener() {
 

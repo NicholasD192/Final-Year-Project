@@ -183,16 +183,18 @@ public class SensorSelect extends Activity implements Serializable {
         resultView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (noSensor) {
+                if (noSensor)
+                {
 
                     Toast.makeText(adapterView.getContext(), "You have not selected a sensor", Toast.LENGTH_SHORT).show();
 
                 }
-                if (!BluetoothAdapter.isEnabled()) {
+                 if (!BluetoothAdapter.isEnabled())
+                {
                     Toast.makeText(adapterView.getContext(), "Bluetooth must be enabled to connect to Bitalino Device", Toast.LENGTH_SHORT).show();
                 }
-
-                else {
+                if (BluetoothAdapter.isEnabled() && (!noSensor))
+                {
                     ListObject item = (ListObject) resultView.getItemAtPosition(i);
                     Intent intent = new Intent(getApplicationContext(), RecordPatientSensorData.class);
                     Bundle extras = new Bundle();

@@ -35,11 +35,7 @@
         android:layout_height="wrap_content"
         android:text="Update"
         android:id="@+id/btnUpdate"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
-        android:id="@+id/btnBack"/>
+
     </LinearLayout>
 
 </LinearLayout>

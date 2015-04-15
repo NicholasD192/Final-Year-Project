@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
@@ -34,7 +34,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
@@ -59,7 +59,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
@@ -85,13 +85,13 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.25"
-            android:text="Symptoms"
+            android:text="Notes"
             android:layout_margin="20dp"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -125,31 +125,16 @@
             android:layout_height="wrap_content"
             android:ems="5"
             android:text="Edit Patient"
-            android:layout_weight="0.21" />
+            android:layout_weight="0.5" />
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <Button
+            android:id="@+id/btnSensorData"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.75"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:ems="5"
+            android:text="View Sensor Data"
+            android:layout_weight="0.5" />
 
-            <Button
-                android:id="@+id/btnSensorData"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="5"
-                android:text="View Sensor Data"
-                android:layout_weight="0.48" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Back"
-                android:id="@+id/btnBack"
-                android:layout_weight="0.48" />
-
-        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

@@ -141,7 +141,7 @@ public class RecreateSensorData extends Activity {
         setContentView(R.layout.recreate_sensor_data);
         StrictMode.enableDefaults(); //STRICT MODE ENABLED
         liveGraph = new GraphViewSeries(new GraphView.GraphViewData[]{});
-        bCancel = (Button) findViewById(R.id.btnCancel);
+        //  bCancel = (Button) findViewById(R.id.btnCancel);
         bRestart = (Button) findViewById(R.id.btnRestart);
         tvTitle = (TextView) findViewById(R.id.title);
         Intent patientIdIntent = getIntent();
@@ -153,17 +153,6 @@ public class RecreateSensorData extends Activity {
         writeDataToGraph();
 
         final TestAsyncTask MySyncTask = new TestAsyncTask();
-        bCancel.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View arg0) {
-
-                MySyncTask.cancel(true);
-                Intent openStartingPoint = new Intent(getApplicationContext(), PatientNames.class);
-                startActivity(openStartingPoint);
-
-            }
-
-        });
 
         bRestart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {

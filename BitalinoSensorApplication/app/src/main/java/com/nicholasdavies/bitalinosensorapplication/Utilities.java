@@ -21,10 +21,11 @@ public class Utilities {
 
     /**
      * Get the base IP for the service
+     *
      * @param ctx Context to use for the shared preferences
      * @return IP from preferences
      */
-    public static String getIP(Context ctx){
+    public static String getIP(Context ctx) {
         /**
          * Preferences object from the android abstraction layer
          */
@@ -39,10 +40,11 @@ public class Utilities {
 
     /**
      * Get the entire URL for the service
+     *
      * @param ctx Context to use for the shared preferences
      * @return Entire URL
      */
-    public static String getURL(Context ctx){
+    public static String getURL(Context ctx) {
         return "http://" + getIP(ctx) + "/scripts/";
     }
 }
