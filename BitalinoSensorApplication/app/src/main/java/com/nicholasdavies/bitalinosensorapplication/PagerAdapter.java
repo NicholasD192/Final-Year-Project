@@ -7,7 +7,9 @@ import com.nicholasdavies.bitalinosensorapplication.FragmentB;
 import com.nicholasdavies.bitalinosensorapplication.FragmentC;
 
 /**
- * Created by Nick Davies on 19/11/2014.
+ * This Controls what fragment is returned when the user Swipes left or right
+ *
+ * @author Nick Davies
  */
 public class PagerAdapter extends FragmentPagerAdapter {
 

@@ -34,7 +34,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Nick Davies on 20/11/2014.
+ * Input Form For entering patient information
+ *
+ * @author Nick Davies
  */
 public class CreatePatient extends Activity {
 
@@ -51,7 +53,7 @@ public class CreatePatient extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.create_patient);
         StrictMode.enableDefaults();
-        //Setting up the ID for the form.
+
         firstName = (EditText) findViewById(R.id.firstName);
 
         lastName = (EditText) findViewById(R.id.lastName);
@@ -64,26 +66,18 @@ public class CreatePatient extends Activity {
 
         bCreate = (Button) findViewById(R.id.btnSubmit);
 
-//        bCancel.setOnClickListener(new View.OnClickListener() {
-//
-//            public void onClick(View arg0) {
-//
-//                Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
-//                startActivity(openStartingPoint);
-//
-//            }
-//        });
-
         bCreate.setOnClickListener(new View.OnClickListener() {
             InputStream isr = null;
 
             public void onClick(View arg0) {
-
+                /** Extracts Patient Information from input form */
                 String firstname = "" + firstName.getText().toString();
                 String lastname = "" + lastName.getText().toString();
                 String dateofbirth = "" + dateOfBirth.getText().toString();
                 String symptoms = "" + patientSymptoms.getText().toString();
 
+
+                /**  Input Validation */
                 if (!firstname.equals("") && !lastname.equals("")) {
 
 
@@ -95,11 +89,11 @@ public class CreatePatient extends Activity {
                     nameValuePairs.add(new BasicNameValuePair("dateofbirth", dateofbirth));
                     nameValuePairs.add(new BasicNameValuePair("symptoms", symptoms));
 
-                    //Actually connecting to the server
+                    /** Connects to server */
                     try {
                         HttpClient httpclient = new DefaultHttpClient();
                         String baseURL = Utilities.getURL(getApplicationContext());
-                        HttpPost httppost = new HttpPost(baseURL + "createnewpatient.php"); //YOUR PHP SCRIPT ADDRESS
+                        HttpPost httppost = new HttpPost(baseURL + "createnewpatient.php");
                         httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                         HttpResponse response = httpclient.execute(httppost);
                         HttpEntity entity = response.getEntity();
@@ -131,6 +125,7 @@ public class CreatePatient extends Activity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                /**  First Name Validation */
                 if (firstName.getText().toString().length() == 0) {
                     firstName.setError("First Name is required!");
                     firstNameCheck = true;
@@ -153,6 +148,7 @@ public class CreatePatient extends Activity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                /**  Second Name Validation */
                 if (lastName.getText().toString().length() == 0) {
                     lastName.setError("Last Name is Required!");
                     lastNameCheck = true;
@@ -175,6 +171,7 @@ public class CreatePatient extends Activity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                /**  Date Validation */
                 if (dateOfBirth.getText().toString().length() == 0) {
                     dateOfBirth.setError("Date of Birth is required");
                     dateCheck = true;

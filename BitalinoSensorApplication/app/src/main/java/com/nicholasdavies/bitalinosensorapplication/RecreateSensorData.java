@@ -63,15 +63,19 @@ import java.util.UUID;
 import retrofit.RestAdapter;
 import retrofit.client.Response;
 
+/**
+ * Downloads Sensor Data as a then plays it back
+ *
+ * @author Nick Davies
+ */
+
+
 
 public class RecreateSensorData extends Activity {
 
     private static final String TAG = "LiveInfo";
     private static final boolean UPLOAD = false;
-    ArrayList<String> patientNames;
-    ListView mainList;
-    ArrayAdapter adapter;
-    Button bCancel;
+
     Button bRestart;
     File root = android.os.Environment.getExternalStorageDirectory();
 
@@ -79,6 +83,7 @@ public class RecreateSensorData extends Activity {
 
 
     private class GraphViewWrapper implements GraphViewDataInterface {
+        /**  Implements a wrapper to enclose the graphView (Couldn't get Included one working) */
 
         private int mX = 0;
         private int mY = 0;
@@ -141,7 +146,6 @@ public class RecreateSensorData extends Activity {
         setContentView(R.layout.recreate_sensor_data);
         StrictMode.enableDefaults(); //STRICT MODE ENABLED
         liveGraph = new GraphViewSeries(new GraphView.GraphViewData[]{});
-        //  bCancel = (Button) findViewById(R.id.btnCancel);
         bRestart = (Button) findViewById(R.id.btnRestart);
         tvTitle = (TextView) findViewById(R.id.title);
         Intent patientIdIntent = getIntent();
@@ -176,13 +180,13 @@ public class RecreateSensorData extends Activity {
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.live_graph);
         layout.addView(graphView);
-
-        // if (!testInitiated)
+        /**  Runs MySyncTask */
         MySyncTask.execute();
     }
 
 
     void downloadRawSensorData() {
+        /**  Downloads Sensor Data from server */
         String result = "";
         InputStream isr = null;
 
@@ -241,6 +245,7 @@ public class RecreateSensorData extends Activity {
     }
 
     void saveRawDataToFile() {
+        /**  Saves Raw Sensor Data to a text file, This is then played back */
         if (!dir.isDirectory()) {
             dir.mkdir();
         }
@@ -265,6 +270,7 @@ public class RecreateSensorData extends Activity {
 
 
     public String readSensorFile() {
+        /**  Reads Temp File */
 
 
         File file = new File(outputDir + outputFile);
@@ -292,11 +298,8 @@ public class RecreateSensorData extends Activity {
 
     }
 
-
-    /**
-     * @author Nick Davies
-     */
     void writeDataToGraph() {
+        /**  Writes Temp Data file value to graph */
         File file = new File(outputDir + outputFile);
         String data = "";
 

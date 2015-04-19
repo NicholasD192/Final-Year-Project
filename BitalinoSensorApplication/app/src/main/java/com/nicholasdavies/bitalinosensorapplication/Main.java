@@ -9,6 +9,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
 
+/**
+ * This is the Main Menu Activity which the Fragments Use
+ *
+ * @author Nick Davies
+ */
 
 public class Main extends FragmentActivity {
 

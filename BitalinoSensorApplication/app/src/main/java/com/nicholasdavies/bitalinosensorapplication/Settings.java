@@ -11,8 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
- * Created by Nick Davies on 12/04/2015.
+ * Activity where user can select custom server IP (Server must be configured with correct scripts)
+ *
+ * @author Nick Davies
  */
+
 public class Settings extends Activity {
 
     Button bUpdate, bBack;
@@ -25,34 +28,16 @@ public class Settings extends Activity {
 
         rootIP = (EditText) findViewById(R.id.editIP);
         bUpdate = (Button) findViewById(R.id.btnUpdate);
-//        bBack = (Button) findViewById(R.id.btnBack);
 
 
         rootIP.setText(Utilities.getIP(getApplicationContext()));
-
-//        bBack.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent openStartingPoint = new Intent(getApplicationContext(), Main.class);
-//                startActivity(openStartingPoint);
-//            }
-//        });
+        /** Uses android own Shared preferences to store the IP Address */
 
         bUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String data;
                 data = rootIP.getText().toString();
-                /*try {
-                    FileOutputStream fOut = openFileOutput(Filename,MODE_WORLD_READABLE);
-                    fOut.write(data.getBytes());
-                    fOut.close();
-                    Toast.makeText(getBaseContext(),"file saved",
-                            Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }*/
 
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 prefs.edit().putString("host_ip", data).apply();

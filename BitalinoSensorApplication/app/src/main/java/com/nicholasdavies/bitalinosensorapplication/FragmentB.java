@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 /**
- * Created by Nick Davies on 17/11/2014.
+ * Fragment B containing create patient option
+ *
+ * @author Nick Davies
  */
 public class FragmentB extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceStat) {

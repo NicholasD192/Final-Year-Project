@@ -12,6 +12,10 @@
  */
 package com.nicholasdavies.bitalinosensorapplication;
 
+/**
+ * Bitalino Android API (Not Written by Nicholas Davies)
+ */
+
 public class BITalinoException extends java.lang.Exception {
 
     private static final long serialVersionUID = 3850110443125871497L;

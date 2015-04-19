@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 /**
- * Created by Nick Davies on 17/11/2014.
+ * Fragment C which links to Patient Information
+ *
+ * @author Nick Davies
  */
 public class FragmentC extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceStat) {

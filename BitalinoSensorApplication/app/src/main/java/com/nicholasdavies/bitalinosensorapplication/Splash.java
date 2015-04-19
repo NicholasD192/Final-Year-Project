@@ -7,12 +7,15 @@ import android.os.Bundle;
 import android.view.Window;
 
 /**
- * Created by Nick Davies on 05/11/2014.
+ * Splash Screen
+ *
+ * @author Nick Davies
  */
 public class Splash extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /** Displays an image then sleeps for a few seconds*/
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.splash);

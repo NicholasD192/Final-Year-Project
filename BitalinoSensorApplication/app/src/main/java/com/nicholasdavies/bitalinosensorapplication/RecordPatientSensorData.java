@@ -61,6 +61,14 @@ import retrofit.RestAdapter;
 import retrofit.client.Response;
 
 
+/**
+ * Connects to Bitalino Device, Records and displays sensor Data.
+ *
+ * @author Nick Davies
+ */
+
+
+
 public class RecordPatientSensorData extends Activity {
 
     private static final String TAG = "LiveInfo";
@@ -78,6 +86,7 @@ public class RecordPatientSensorData extends Activity {
 
 
     private class GraphViewWrapper implements GraphViewDataInterface {
+        /**  Implements a wrapper to enclose the graphView (Couldn't get Included one working) */
 
         private int mX = 0;
         private int mY = 0;
@@ -120,6 +129,7 @@ public class RecordPatientSensorData extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /**  On create links Activity to XML Layout and defines button and text fields etc */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.record_patient_sensor_data);
         StrictMode.enableDefaults(); //STRICT MODE ENABLED
@@ -134,6 +144,7 @@ public class RecordPatientSensorData extends Activity {
         final String Notes = "";
         Toast.makeText(getApplicationContext(), "Connecting to the Bitalino Device", Toast.LENGTH_LONG).show();
 
+        /**  This will store the date the sensor information has been taken */
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
         final String dateFormatted = date.format(c.getTime());
 
@@ -144,6 +155,8 @@ public class RecordPatientSensorData extends Activity {
         bCancel.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
+                /**  Cancels MySyncTask that will close the connection with the bitalino and tell it to stop */
+
 
                 MySyncTask.cancel(true);
                 Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
@@ -157,9 +170,11 @@ public class RecordPatientSensorData extends Activity {
 
             public void onClick(View arg0) {
 
+                /**  Will stop Bitalino Sending Data and upload data stored*/
+
                 MySyncTask.cancel(true);
 
-
+                /**  File that temporarily stores sensor data before upload */
                 String sensorData = readSensorFile();
 
 
@@ -171,9 +186,10 @@ public class RecordPatientSensorData extends Activity {
                 nameValuePairs.add(new BasicNameValuePair("sensortype", Integer.toString(sensorType)));
                 nameValuePairs.add(new BasicNameValuePair("notes", Notes));
 
-                //Actually connecting to the server
+                /**  Connecting to server */
                 try {
                     HttpClient httpclient = new DefaultHttpClient();
+                    /**  Calls PhP Script */
                     HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/createnewsensordata.php"); //YOUR PHP SCRIPT ADDRESS
                     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                     HttpResponse response = httpclient.execute(httppost);
@@ -185,8 +201,9 @@ public class RecordPatientSensorData extends Activity {
                     Thread thread = new Thread() {
                         @Override
                         public void run() {
+                            /**  Closes the Activity once the toast has finished displaying */
                             try {
-                                Thread.sleep(3500); //This closes the activity once the toast has finished displaying
+                                Thread.sleep(3500);
                                 RecordPatientSensorData.this.finish();
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -204,19 +221,11 @@ public class RecordPatientSensorData extends Activity {
                     e.printStackTrace();
                 }
 
-
-                //This is where the upload code will go
-                //1. Change tempory file name to patientID+random integers
-                //2. Upload file to database along with all relevant information.
-                //3. Pass to New Screen
-//                Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
-//                startActivity(openStartingPoint);
-
             }
 
         });
 
-
+        /**  Sets up the axis and various properties of the graphView Package */
         GraphView graphView = new LineGraphView(this, "Patient Data");
         graphView.setScrollable(true);
         graphView.addSeries(liveGraph);
@@ -229,10 +238,12 @@ public class RecordPatientSensorData extends Activity {
         LinearLayout layout = (LinearLayout) findViewById(R.id.live_graph);
         layout.addView(graphView);
 
+
+        /**  Begin MySyncTask */
         if (!testInitiated)
             MySyncTask.execute();
     }
-
+    /**  Builds a string out of the temp file so it can be uploaded */
     public String readSensorFile() {
 
 
@@ -261,7 +272,7 @@ public class RecordPatientSensorData extends Activity {
 
     }
 
-
+    /**  A Sync Task*/
     private class TestAsyncTask extends AsyncTask<Void, String, Void> {
         ArrayAdapter<String> adapter;
         private BluetoothDevice dev = null;
@@ -270,13 +281,10 @@ public class RecordPatientSensorData extends Activity {
         private OutputStream os = null;
         private BITalinoDevice bitalino;
 
-
-        // ArrayAdapter<String> adapter = new ArrayAdapter<String>()
-
         @Override
         protected Void doInBackground(Void... paramses) {
             try {
-                // Let's get the remote Bluetooth device
+                /**  Bitalino Mac Address*/
                 final String remoteDevice = "98:D3:31:B1:83:A4";
 
                 final BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -290,40 +298,35 @@ public class RecordPatientSensorData extends Activity {
                 testInitiated = true;
 
                 bitalino = new BITalinoDevice(10, new int[]{0});
-                //  publishProgress("Connecting to BITalino [" + remoteDevice + "]..");
+
                 bitalino.open(sock.getInputStream(), sock.getOutputStream());
-                // publishProgress("Connected.");
 
-                // get BITalino version
-                // publishProgress("Version: " + bitalino.version());
-                // publishProgress("Analogue Value" + );
-
-                // start acquisition on predefined analog channels
                 bitalino.start();
 
-                // read until task is stopped
+                /**  Read intill Task is stopped*/
                 int counter = 0;
                 while (!isCancelled()) {
                     final int numberOfSamplesToRead = 1;
 
+
                     BITalinoFrame[] frames = bitalino.read(numberOfSamplesToRead);
 
-                    if (UPLOAD) {
-                        // prepare reading for upload
-                        BITalinoReading reading = new BITalinoReading();
-                        reading.setTimestamp(System.currentTimeMillis());
-                        reading.setFrames(frames);
-                        // instantiate reading service client
-                        RestAdapter restAdapter = new RestAdapter.Builder()
-                                .setEndpoint("http://server_ip:8080/bitalino")
-                                .build();
-                        ReadingService service = restAdapter.create(ReadingService.class);
-                        // upload reading
-                        Response response = service.uploadReading(reading);
-                        assert response.getStatus() == 200;
-                    }
+//                    if (UPLOAD) {
+//                        // prepare reading for upload
+//                        BITalinoReading reading = new BITalinoReading();
+//                        reading.setTimestamp(System.currentTimeMillis());
+//                        reading.setFrames(frames);
+//                        // instantiate reading service client
+//                        RestAdapter restAdapter = new RestAdapter.Builder()
+//                                .setEndpoint("http://server_ip:8080/bitalino")
+//                                .build();
+//                        ReadingService service = restAdapter.create(ReadingService.class);
+//                        // upload reading
+//                        Response response = service.uploadReading(reading);
+//                        assert response.getStatus() == 200;
+//                    }
 
-                    // present data in screen
+                    /**  This passes sensor value to PublishProgess*/
                     for (BITalinoFrame frame : frames)
                         //publishProgress(frame.toString());
                         publishProgress(Integer.toString(frame.getAnalog(0)));
@@ -343,6 +346,7 @@ public class RecordPatientSensorData extends Activity {
         }
 
         @Override
+        /**  Creates Temp File to Store Sensor Data, This is done as the MySyncTask is created*/
         protected void onPreExecute() {
 
 
@@ -365,6 +369,7 @@ public class RecordPatientSensorData extends Activity {
 
         @Override
         protected void onProgressUpdate(String... values) {
+            /**  Outputs Sensor Data to file*/
 
             if (values.length > 0) {
                 try {
@@ -377,7 +382,7 @@ public class RecordPatientSensorData extends Activity {
                     }
 
                     int yVal = Integer.parseInt(values[0]);
-
+                    /**  Updates Graph with new Sensor Values, Currently the graph will only show 20 on screen */
                     if (yVal < 1000 && yVal > 0) {
                         if (graphViewWrapperList.size() > 20)
                             graphViewWrapperList.remove(0);
@@ -392,7 +397,7 @@ public class RecordPatientSensorData extends Activity {
 
         @Override
         protected void onCancelled() {
-            // stop acquisition and close bluetooth connection
+            /**  This is called when the MySyncTask is called, closes connection with the bitalino device. */
             try {
 
                 bitalino.stop();

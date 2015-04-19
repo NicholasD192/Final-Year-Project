@@ -11,39 +11,21 @@ import java.io.IOException;
 
 
 /**
- * Created by Nick Davies on 12/04/2015.
- */
-
-/**
- * Utility class with cool static methods (inspired by Tesla)
+ * Class Containing methods to retrieve the server IP
+ *
+ * @author Nick Davies
  */
 public class Utilities {
 
-    /**
-     * Get the base IP for the service
-     *
-     * @param ctx Context to use for the shared preferences
-     * @return IP from preferences
-     */
+    /** This method is called when only the IP fo the server is wanted */
     public static String getIP(Context ctx) {
-        /**
-         * Preferences object from the android abstraction layer
-         */
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        // Return the host ip from the preferences
+        // Return the host ip from the shared preferences
         return prefs.getString("host_ip", "");
     }
 
-    // ***
-    // WHEN YOU WANT TO GET THE URL USE Utilities.getURL(getApplicationContext());
-    // *&**
 
-    /**
-     * Get the entire URL for the service
-     *
-     * @param ctx Context to use for the shared preferences
-     * @return Entire URL
-     */
+    /** This method is called when the IP and scripts directory are required*/
     public static String getURL(Context ctx) {
         return "http://" + getIP(ctx) + "/scripts/";
     }

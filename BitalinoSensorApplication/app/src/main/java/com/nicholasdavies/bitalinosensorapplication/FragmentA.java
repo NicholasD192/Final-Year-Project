@@ -12,7 +12,9 @@ import android.widget.ImageButton;
 import java.util.Set;
 
 /**
- * Created by Nick Davies on 17/11/2014.
+ * Fragment A containing settings option
+ *
+ * @author Nick Davies
  */
 public class FragmentA extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceStat) {

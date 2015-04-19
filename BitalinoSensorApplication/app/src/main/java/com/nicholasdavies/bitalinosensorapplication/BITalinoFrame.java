@@ -16,6 +16,10 @@ import java.util.Arrays;
 
 import com.google.common.base.Objects;
 
+/**
+ * Bitalino Android API (Not Written by Nicholas Davies)
+ */
+
 public class BITalinoFrame {
     private int crc;
     private int seq;

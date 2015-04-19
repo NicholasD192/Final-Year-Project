@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Bitalino Android API (Not Written by Nicholas Davies)
  * TODO replace description strings with properties for internationalization.
  */
 public enum BITalinoErrorTypes {

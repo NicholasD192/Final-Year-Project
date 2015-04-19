@@ -34,15 +34,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * This Activity Displays all sensor data associated with a single patient
+ *
+ * @author Nick Davies
+ */
 public class ListPatientSensorData extends Activity implements Serializable {
-    /**
-     * Called when the activity is first created.
-     */
+
 
     private static int lastArbitraryData = 0;
     List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 
+    /**
+     * Custom List Object used to store a Sensor Information in a list as well as the Unique ID for that Input
+     */
     private class ListObject {
+        /**
+         * Default Constructor
+         */
         private ListObject(Integer arbitraryDataA, String arbitraryDataB) {
             this.arbitraryDataA = arbitraryDataA;
             this.arbitraryDataB = arbitraryDataB;
@@ -69,41 +78,37 @@ public class ListPatientSensorData extends Activity implements Serializable {
         }
     }
 
-    List<ListObject> patientnames;
+    List<ListObject> sensordata;
     TextView error;
-    ListView resultView;
-
-    Button bBack;
-    int x = 0;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_sensor_data_list);
-        StrictMode.enableDefaults(); //STRICT MODE ENABLE
-        patientnames = new ArrayList<ListObject>();
+        StrictMode.enableDefaults();
+        sensordata = new ArrayList<ListObject>();
         ListView resultView = (ListView) findViewById(R.id.patient_Names);
 
-        // Button bBack = (Button) findViewById(R.id.btnBack);
 
         getData();
         onClickList();
-        if (patientnames.size() == 0) {
+        if (sensordata.size() == 0) {
             int intsensorDataID = 0;
             String s = "No Sensor Data Found ";
-            patientnames.add(new ListObject(intsensorDataID, s));
+            sensordata.add(new ListObject(intsensorDataID, s));
         }
 
-        ArrayAdapter<ListObject> myadapter = new ArrayAdapter<ListObject>(this, R.layout.patient_list_item, R.id.label, patientnames);
+        ArrayAdapter<ListObject> myadapter = new ArrayAdapter<ListObject>(this, R.layout.patient_list_item, R.id.label, sensordata);
         resultView.setAdapter(myadapter);
     }
 
-
+    /**
+     * Gets Patient Sensor Information from server
+     */
     public void getData() {
         String result = "";
         InputStream isr = null;
-        //Actually connecting to the server
+        /** Extracts PatientID from last activity and passes this into the PhP script */
         Intent patientIdIntent = getIntent();
         int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
         nameValuePairs.add(new BasicNameValuePair("patientID", String.valueOf(PatientID)));
@@ -120,7 +125,7 @@ public class ListPatientSensorData extends Activity implements Serializable {
             Log.e("log_tag", "Error in http connection " + e.toString());
             error.setText("Couldn't connect to database");
         }
-        //convert response to string
+        /** Converts Response to a string using StringBuilder */
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(isr, "iso-8859-1"), 8);
             StringBuilder sb = new StringBuilder();
@@ -145,7 +150,7 @@ public class ListPatientSensorData extends Activity implements Serializable {
             int id;
 
             JSONArray jArray = new JSONArray(result);
-
+            /** Displays EMG, ECG or EDA depending on SensorType */
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json = jArray.getJSONObject(i);
                 sensorType = "" + json.getString("SensorType");
@@ -163,14 +168,14 @@ public class ListPatientSensorData extends Activity implements Serializable {
                     sensorTypeString = "EDA";
                 }
 
-
+                /** Constructs List entry */
                 s = "Date:" + json.getString("Date") + " Sensor Type: " + sensorTypeString + "\n";
 
                 sensorDataID = json.getString("SensorDataID");
                 intsensorDataID = Integer.parseInt(sensorDataID);
 
-
-                patientnames.add(new ListObject(intsensorDataID, s));
+                /** Uses the same List Object used in Patient */
+                sensordata.add(new ListObject(intsensorDataID, s));
 
 
             }
@@ -186,6 +191,7 @@ public class ListPatientSensorData extends Activity implements Serializable {
 
 
     private void onClickList() {
+        /** When a user selects a specific data recording, a new activity is called where the sensorID is passed to */
         final ListView resultView = (ListView) findViewById(R.id.patient_Names);
         resultView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

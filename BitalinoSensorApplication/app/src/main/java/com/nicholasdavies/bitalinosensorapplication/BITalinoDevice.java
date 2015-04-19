@@ -19,6 +19,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
+ * Bitalino Android API (Not Written by Nicholas Davies)
  * This class represents a BITalino device and provides methods to interact with
  * said device.
  */

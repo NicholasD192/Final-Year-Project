@@ -32,11 +32,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
- * Created by Nick Davies on 24/11/2014.
+ * Activity used to Edit Patient Information
+ *
+ * @author Nick Davies
  */
-
 public class PatientEditInfo extends Activity {
     Button bUploadEdit, bBack;
 
@@ -106,7 +106,7 @@ public class PatientEditInfo extends Activity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 if (lastName.getText().toString().length() == 0) {
-                    lastName.setError("First Name is required!");
+                    lastName.setError("Last Name is required!");
                     lastNameCheck = true;
                 } else
                     lastNameCheck = false;
@@ -128,7 +128,7 @@ public class PatientEditInfo extends Activity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                 if (dateOfBirth.getText().toString().length() == 0) {
-                    dateOfBirth.setError("First Name is required!");
+                    dateOfBirth.setError("Date of Birth is required!");
                     dateCheck = true;
                 } else
                     dateCheck = false;
@@ -142,22 +142,12 @@ public class PatientEditInfo extends Activity {
             }
         });
 
-//        bBack.setOnClickListener(new View.OnClickListener() {
-//
-//            public void onClick(View arg0) {
-//
-//                Intent openStartingPoint = new Intent(getApplicationContext(), PatientNames.class);
-//                startActivity(openStartingPoint);
-//
-//
-//            }
-//        });
 
         bUploadEdit.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
+                /**  Validation */
 
-//                if (!firstNameCheck || !lastNameCheck || !dateCheck) {
 
                 String firstname = "" + firstName.getText().toString();
                 String lastname = "" + lastName.getText().toString();
@@ -173,7 +163,7 @@ public class PatientEditInfo extends Activity {
                 nameValuePairs.add(new BasicNameValuePair("dateofbirth", dateofbirth));
                 nameValuePairs.add(new BasicNameValuePair("symptoms", symptoms));
 
-                //Actually connecting to the server
+                /**  Connecting to Server */
                 try {
                     HttpClient httpclient = new DefaultHttpClient();
                     String baseURL = Utilities.getURL(getApplicationContext());
@@ -199,13 +189,10 @@ public class PatientEditInfo extends Activity {
                     Log.e("Log_tag", "IOException");
                     e.printStackTrace();
                 }
-//                } else
-//                {
-//                    Toast.makeText(getApplicationContext(), "Invalid Input", Toast.LENGTH_LONG).show();
-//                }
-
 
             }
+
+
         });
 
 
@@ -251,7 +238,7 @@ public class PatientEditInfo extends Activity {
             Log.e("log_tag", "Error  converting result " + e.toString());
         }
 
-        //parse json data
+        /**  Inputs Downloaded Patient Data into Edit Text Fields*/
         try {
 
             JSONArray jArray = new JSONArray(result);

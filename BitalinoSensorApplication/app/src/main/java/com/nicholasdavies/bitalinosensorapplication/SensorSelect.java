@@ -33,13 +33,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Spinner;
 import android.widget.Toast;
+/**
+ * Activity where user selects sensor and patient they wish to record data to
+ *
+ * @author Nick Davies
+ */
+
+
+
 
 public class SensorSelect extends Activity implements Serializable {
-    /**
-     * Called when the activity is first created.
-     */
 
     private static int lastArbitraryData = 0;
+
+
+    /** Uses the same custom list object as found in PatientNames.java */
 
     private class ListObject {
         private ListObject(Integer arbitraryDataA, String arbitraryDataB) {
@@ -70,9 +78,7 @@ public class SensorSelect extends Activity implements Serializable {
 
     List<ListObject> patientnames;
     TextView error;
-    ListView resultView;
 
-    Button bBack;
     boolean noSensor;
     int sensorType;
 
@@ -95,6 +101,7 @@ public class SensorSelect extends Activity implements Serializable {
     }
 
     public void setupDropDown() {
+        /** Dropdown menu where user can select Sensors */
         Spinner dropdown = (Spinner) findViewById(R.id.spinner1);
         String[] dropdownitems = new String[]{"Choose Sensor", "EMG", "ECG", "EDA"};
         ArrayAdapter<String> dropDownAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dropdownitems);
@@ -102,6 +109,7 @@ public class SensorSelect extends Activity implements Serializable {
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                /** Validation */
                 if (i == 0) {
                     noSensor = true;
                 } else {
@@ -123,7 +131,7 @@ public class SensorSelect extends Activity implements Serializable {
     public void getData() {
         String result = "";
         InputStream isr = null;
-        //Actually connecting to the server
+        /** Connecting to server */
         try {
             HttpClient httpclient = new DefaultHttpClient();
             String baseURL = Utilities.getURL(getApplicationContext());
@@ -135,7 +143,7 @@ public class SensorSelect extends Activity implements Serializable {
             Log.e("log_tag", "Error in http connection " + e.toString());
             error.setText("Couldn't connect to database");
         }
-        //convert response to string
+        /** Converting response to string */
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(isr, "iso-8859-1"), 8);
             StringBuilder sb = new StringBuilder();
@@ -150,7 +158,6 @@ public class SensorSelect extends Activity implements Serializable {
             Log.e("log_tag", "Error  converting result " + e.toString());
         }
 
-        //parse json data
         try {
             String s = "";
             String sid = "";
@@ -178,23 +185,21 @@ public class SensorSelect extends Activity implements Serializable {
 
 
     public void onClickList() {
+        /** Once a user selects a patient, Validation takes place to make sure the user has bluetooth turned on and has selected a sensor */
         final BluetoothAdapter BluetoothAdapter = android.bluetooth.BluetoothAdapter.getDefaultAdapter();
         final ListView resultView = (ListView) findViewById(R.id.patient_Names);
         resultView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (noSensor)
-                {
+                if (noSensor) {
 
                     Toast.makeText(adapterView.getContext(), "You have not selected a sensor", Toast.LENGTH_SHORT).show();
 
                 }
-                 if (!BluetoothAdapter.isEnabled())
-                {
+                if (!BluetoothAdapter.isEnabled()) {
                     Toast.makeText(adapterView.getContext(), "Bluetooth must be enabled to connect to Bitalino Device", Toast.LENGTH_SHORT).show();
                 }
-                if (BluetoothAdapter.isEnabled() && (!noSensor))
-                {
+                if (BluetoothAdapter.isEnabled() && (!noSensor)) {
                     ListObject item = (ListObject) resultView.getItemAtPosition(i);
                     Intent intent = new Intent(getApplicationContext(), RecordPatientSensorData.class);
                     Bundle extras = new Bundle();

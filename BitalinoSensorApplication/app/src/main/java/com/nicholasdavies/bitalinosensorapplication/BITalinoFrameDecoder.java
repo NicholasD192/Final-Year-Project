@@ -16,6 +16,7 @@ import java.io.IOException;
 
 /**
  * {@link BITalinoFrame} decoder.
+ * Bitalino Android API (Not Written by Nicholas Davies)
  */
 final class BITalinoFrameDecoder {
 

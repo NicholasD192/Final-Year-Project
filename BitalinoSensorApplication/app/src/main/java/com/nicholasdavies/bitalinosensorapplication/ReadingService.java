@@ -19,6 +19,7 @@ import retrofit.http.Body;
 import retrofit.http.PUT;
 
 /**
+ * Bitalino Android API (Not Written by Nicholas Davies)
  * Definition of REST service available in BITalino Server.
  */
 public interface ReadingService {

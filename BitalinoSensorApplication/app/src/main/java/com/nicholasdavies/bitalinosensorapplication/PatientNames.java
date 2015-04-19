@@ -36,11 +36,13 @@ import android.widget.Toast;
 
 public class PatientNames extends Activity implements Serializable {
     /**
-     * Called when the activity is first created.
+     * Displays All Patient Names
+     *
+     * @author Nick Davies
      */
-
     private static int lastArbitraryData = 0;
 
+    /**  Custom List Object That holds both a Patients name but also their unique ID */
     private class ListObject {
         private ListObject(Integer arbitraryDataA, String arbitraryDataB) {
             this.arbitraryDataA = arbitraryDataA;
@@ -70,13 +72,12 @@ public class PatientNames extends Activity implements Serializable {
 
     List<ListObject> patientnames;
     TextView error;
-    ListView resultView;
-    Button bBack;
-    EditText search;
+
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        /**  This is called when the Activity is called*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.patient_names);
         StrictMode.enableDefaults(); //STRICT MODE ENABLE
@@ -84,11 +85,11 @@ public class PatientNames extends Activity implements Serializable {
         ListView resultView = (ListView) findViewById(R.id.patient_Names);
         EditText search = (EditText) findViewById(R.id.search);
 
-        Button bBack = (Button) findViewById(R.id.btnBack);
+
 
         getData();
         onClickList();
-
+        /**  Uses Custom Adapter for the list*/
         final ArrayAdapter<ListObject> myadapter = new ArrayAdapter<ListObject>(this, R.layout.patient_list_item, R.id.label, patientnames);
         resultView.setAdapter(myadapter);
 
@@ -115,7 +116,7 @@ public class PatientNames extends Activity implements Serializable {
     public void getData() {
         String result = "";
         InputStream isr = null;
-        //Actually connecting to the server
+        /**  Uses Custom Adapter for the list*/
         try {
             HttpClient httpclient = new DefaultHttpClient();
             String baseURL = Utilities.getURL(getApplicationContext());
@@ -127,7 +128,7 @@ public class PatientNames extends Activity implements Serializable {
             Log.e("log_tag", "Error in http connection " + e.toString());
             error.setText("Couldn't connect to database");
         }
-        //convert response to string
+        /**  Creates String From Response*/
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(isr, "iso-8859-1"), 8);
             StringBuilder sb = new StringBuilder();
@@ -142,7 +143,7 @@ public class PatientNames extends Activity implements Serializable {
             Log.e("log_tag", "Error  converting result " + e.toString());
         }
 
-        //parse json data
+        /**  Turns JSON Objects into the correct format for List Object*/
         try {
             String s = "";
             String sid = "";
@@ -170,6 +171,7 @@ public class PatientNames extends Activity implements Serializable {
 
 
     private void onClickList() {
+        /** When a list item is clicked the ID for that Item is passed to the next activity*/
         final ListView resultView = (ListView) findViewById(R.id.patient_Names);
         resultView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

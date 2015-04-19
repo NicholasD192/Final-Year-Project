@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 /**
- * Created by Nick Davies on 17/11/2014.
+ * Fragment D which links to the Sensor Selection menu for data input
+ *
+ * @author Nick Davies
  */
 public class FragmentD extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceStat) {

@@ -32,7 +32,9 @@ import java.util.List;
 
 
 /**
- * Created by Nick Davies on 24/11/2014.
+ * Activity used to View Patient Information
+ *
+ * @author Nick Davies
  */
 
 public class PatientInfo extends Activity {
@@ -62,25 +64,14 @@ public class PatientInfo extends Activity {
 
         bSensorData = (Button) findViewById(R.id.btnSensorData);
 
-        // bBack = (Button) findViewById(R.id.btnBack);
 
         getData();
 
-//        bBack.setOnClickListener(new View.OnClickListener() {
-//
-//            public void onClick(View arg0) {
-//
-//
-//                Intent openStartingPoint = new Intent(getApplicationContext(), PatientNames.class);
-//                startActivity(openStartingPoint);
-//
-//            }
-//        });
 
         bEdit.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-
+                /**  Calls editing activity and pass's the ID */
 
                 Intent patientIdIntent = getIntent();
                 int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
@@ -94,7 +85,7 @@ public class PatientInfo extends Activity {
         bSensorData.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View arg0) {
-
+                /**  Allows User to view all sensor data assossicated with that patient */
 
                 Intent patientIdIntent = getIntent();
                 int PatientID = patientIdIntent.getIntExtra("PatientID", 0);
@@ -151,7 +142,7 @@ public class PatientInfo extends Activity {
             Log.e("log_tag", "Error  converting result " + e.toString());
         }
 
-        //parse json data
+        /**  Turns JSON Objects into Strings */
         try {
 
             JSONArray jArray = new JSONArray(result);
