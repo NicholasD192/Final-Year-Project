@@ -29,11 +29,18 @@
             android:ems="5"
             android:text="Upload" />
         <Button
+            android:id="@+id/btnStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="begin" />
+        <Button
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="5"
             android:text="Cancel" />
+
 
     </LinearLayout>
 

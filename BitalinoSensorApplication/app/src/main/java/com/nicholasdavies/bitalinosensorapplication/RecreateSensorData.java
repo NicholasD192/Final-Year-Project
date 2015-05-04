@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -131,15 +132,18 @@ public class RecreateSensorData extends Activity {
     private GraphViewSeries liveGraph;
 
     private ArrayList<GraphViewWrapper> fileBuffer;
-    int SensordataID;
-    String sensorData;
+    int SensordataID, speed = 50;
+    String sensorData,id;
+
     String patientID = "";
-    TextView tvTitle;
+    String sensorTypeString;
+    TextView txtSensorType;
+    SeekBar seekSpeed;
     File dir = new File(root.getAbsolutePath() + "/Temp");
     String outputDir = root.getAbsolutePath() + "/Temp/";
     String outputFile = "temp.txt";
     InputStream isr = null;
-
+    final TestAsyncTask MySyncTask = new TestAsyncTask();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,7 +151,12 @@ public class RecreateSensorData extends Activity {
         StrictMode.enableDefaults(); //STRICT MODE ENABLED
         liveGraph = new GraphViewSeries(new GraphView.GraphViewData[]{});
         bRestart = (Button) findViewById(R.id.btnRestart);
-        tvTitle = (TextView) findViewById(R.id.title);
+        txtSensorType = (TextView) findViewById(R.id.txtSensorType);
+        seekSpeed = (SeekBar) findViewById(R.id.seekSpeed);
+        seekSpeed.setMax(100);
+
+
+        //Importing patient ID from previous activity
         Intent patientIdIntent = getIntent();
         SensordataID = patientIdIntent.getIntExtra("SensordataID", 0);
 
@@ -156,15 +165,42 @@ public class RecreateSensorData extends Activity {
         saveRawDataToFile();
         writeDataToGraph();
 
-        final TestAsyncTask MySyncTask = new TestAsyncTask();
+
 
         bRestart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
                 MySyncTask.cancel(true);
                 TestAsyncTask MySyncTask = new TestAsyncTask();
-                MySyncTask.execute();
-                Toast.makeText(getApplicationContext(), "Connecting to the Bitalino Device", Toast.LENGTH_LONG).show();
+                //Restarting Activity
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        });
 
+        seekSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+
+                if (progress == 0)
+                {
+                    progress = 1;
+                }
+
+                speed = progress;
+
+
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
         });
@@ -175,20 +211,31 @@ public class RecreateSensorData extends Activity {
         graphView.setDisableTouch(false);
         graphView.setManualMaxY(true);
         graphView.setManualMinY(true);
-        graphView.setManualYMaxBound(1000);
-        graphView.setManualYMinBound(0);
+        graphView.setManualYMaxBound(800);
+        graphView.setManualYMinBound(100);
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.live_graph);
         layout.addView(graphView);
         /**  Runs MySyncTask */
         MySyncTask.execute();
+
+
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        MySyncTask.cancel(true);
+
+
+
+    }
 
     void downloadRawSensorData() {
         /**  Downloads Sensor Data from server */
         String result = "";
         InputStream isr = null;
+        Toast.makeText(getApplicationContext(), "Downloading Sensor Data", Toast.LENGTH_LONG).show();
 
         nameValuePairs.add(new BasicNameValuePair("sensordataID", String.valueOf(SensordataID)));
 
@@ -234,6 +281,17 @@ public class RecreateSensorData extends Activity {
                 JSONObject json = jArray.getJSONObject(i);
                 sensorData = "" + json.getString("SensorFileName");
                 patientID = "" + json.getString("PatientID");
+                id = "" + json.getString("SensorType");
+                if (id.equals("1")) {
+                    sensorTypeString = "EMG";
+                }
+                if (id.equals("2")) {
+                    sensorTypeString = "ECG";
+                }
+                if (id.equals("3")) {
+                    sensorTypeString = "EDA";
+                }
+                txtSensorType.setText("Sensor Type: " + sensorTypeString);
             }
 
 
@@ -272,7 +330,6 @@ public class RecreateSensorData extends Activity {
     public String readSensorFile() {
         /**  Reads Temp File */
 
-
         File file = new File(outputDir + outputFile);
         StringBuilder readData = new StringBuilder();
         String data = "";
@@ -286,6 +343,7 @@ public class RecreateSensorData extends Activity {
                 readData.append('\n');
             }
             br.close();
+
         } catch (IOException e) {
 
         }
@@ -314,12 +372,13 @@ public class RecreateSensorData extends Activity {
             try {
                 while ((line = br.readLine()) != null) {
 
+
                     int yVal = Integer.parseInt(line);
 
                     if (yVal > 0 && yVal < 1000)
                         fileBuffer.add(new GraphViewWrapper(++xVal, yVal));
-
                 }
+
                 br.close();
             } catch (IOException e) {
 
@@ -332,7 +391,8 @@ public class RecreateSensorData extends Activity {
 
     private class TestAsyncTask extends AsyncTask<Void, String, Void> {
 
-        private final int MAX_BEFORE_SCROLL = 20;
+        //This is the amount on screen before scrolling begins
+        private final int MAX_BEFORE_SCROLL = 100;
         /**
          * Buffer to hold the currently shown values, won't exceed maxBeforeScroll in length
          */
@@ -374,7 +434,7 @@ public class RecreateSensorData extends Activity {
 
                 // Attempt the sleep for 1 second
                 try {
-                    Thread.sleep(50, 0);
+                    Thread.sleep(0,speed);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }

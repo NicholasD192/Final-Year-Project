@@ -78,13 +78,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.75"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:weightSum="1">
 
             <EditText
                 android:id="@+id/symptoms"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="15"/>
+                android:ems="15"
+                android:layout_weight="1.02" />
 
         </LinearLayout>
     </LinearLayout>
@@ -103,14 +105,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.75"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:weightSum="1">
 
             <Button
                 android:id="@+id/btnSubmit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="5"
-                android:text="Create" />
+                android:text="Input Patient Information"
+                android:layout_weight="0.65" />
 
         </LinearLayout>
     </LinearLayout>

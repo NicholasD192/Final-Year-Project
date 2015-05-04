@@ -68,16 +68,11 @@ import retrofit.client.Response;
  */
 
 
-
 public class RecordPatientSensorData extends Activity {
 
     private static final String TAG = "LiveInfo";
     private static final boolean UPLOAD = false;
-    ArrayList<String> patientNames;
-    ListView mainList;
-    ArrayAdapter adapter;
-    Button bCancel;
-    Button bUpload;
+    Button bCancel, bUpload, bStart;
     File root = android.os.Environment.getExternalStorageDirectory();
     File dir = new File(root.getAbsolutePath() + "/Temp");
     String outputDir = root.getAbsolutePath() + "/Temp/";
@@ -86,13 +81,15 @@ public class RecordPatientSensorData extends Activity {
 
 
     private class GraphViewWrapper implements GraphViewDataInterface {
-        /**  Implements a wrapper to enclose the graphView (Couldn't get Included one working) */
+        /**
+         * Implements a wrapper to enclose the graphView (Couldn't get Included one working)
+         */
 
         private int mX = 0;
         private int mY = 0;
 
         public GraphViewWrapper(int x, int y) {
-            System.out.println("X: " + x + "| Y: " + y);
+            //System.out.println("X: " + x + "| Y: " + y);
             mX = x;
             mY = y;
         }
@@ -136,13 +133,14 @@ public class RecordPatientSensorData extends Activity {
         liveGraph = new GraphViewSeries(new GraphView.GraphViewData[]{});
         bCancel = (Button) findViewById(R.id.btnCancel);
         bUpload = (Button) findViewById(R.id.btnUpload);
+        bStart = (Button) findViewById(R.id.btnStart);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         final int patientID = bundle.getInt("PatientID");
         final int sensorType = bundle.getInt("sensorType");
         Calendar c = Calendar.getInstance();
         final String Notes = "";
-        Toast.makeText(getApplicationContext(), "Connecting to the Bitalino Device", Toast.LENGTH_LONG).show();
+
 
         /**  This will store the date the sensor information has been taken */
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
@@ -161,6 +159,22 @@ public class RecordPatientSensorData extends Activity {
                 MySyncTask.cancel(true);
                 Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
                 startActivity(openStartingPoint);
+
+            }
+
+        });
+        bStart.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View arg0) {
+                /**  Cancels MySyncTask that will close the connection with the bitalino and tell it to stop */
+
+                Toast.makeText(getApplicationContext(), "Connecting to the Bitalino Device", Toast.LENGTH_LONG).show();
+
+
+                /**  Begin MySyncTask */
+
+                if (!testInitiated)
+                    MySyncTask.execute();
 
             }
 
@@ -190,7 +204,8 @@ public class RecordPatientSensorData extends Activity {
                 try {
                     HttpClient httpclient = new DefaultHttpClient();
                     /**  Calls PhP Script */
-                    HttpPost httppost = new HttpPost("http://178.62.115.123/scripts/createnewsensordata.php"); //YOUR PHP SCRIPT ADDRESS
+                    String baseURL = Utilities.getURL(getApplicationContext());
+                    HttpPost httppost = new HttpPost(baseURL + "createnewsensordata.php"); //YOUR PHP SCRIPT ADDRESS
                     httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                     HttpResponse response = httpclient.execute(httppost);
                     HttpEntity entity = response.getEntity();
@@ -232,18 +247,18 @@ public class RecordPatientSensorData extends Activity {
         graphView.setDisableTouch(false);
         graphView.setManualMaxY(true);
         graphView.setManualMinY(true);
-        graphView.setManualYMaxBound(1000);
-        graphView.setManualYMinBound(0);
+        graphView.setManualYMaxBound(800);
+        graphView.setManualYMinBound(200);
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.live_graph);
         layout.addView(graphView);
 
 
-        /**  Begin MySyncTask */
-        if (!testInitiated)
-            MySyncTask.execute();
     }
-    /**  Builds a string out of the temp file so it can be uploaded */
+
+    /**
+     * Builds a string out of the temp file so it can be uploaded
+     */
     public String readSensorFile() {
 
 
@@ -272,7 +287,9 @@ public class RecordPatientSensorData extends Activity {
 
     }
 
-    /**  A Sync Task*/
+    /**
+     * A Sync Task
+     */
     private class TestAsyncTask extends AsyncTask<Void, String, Void> {
         ArrayAdapter<String> adapter;
         private BluetoothDevice dev = null;
@@ -285,7 +302,7 @@ public class RecordPatientSensorData extends Activity {
         protected Void doInBackground(Void... paramses) {
             try {
                 /**  Bitalino Mac Address*/
-                final String remoteDevice = "98:D3:31:B1:83:A4";
+                final String remoteDevice = Utilities.getMac(getApplicationContext());
 
                 final BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
                 dev = btAdapter.getRemoteDevice(remoteDevice);
@@ -297,7 +314,7 @@ public class RecordPatientSensorData extends Activity {
                 sock.connect();
                 testInitiated = true;
 
-                bitalino = new BITalinoDevice(10, new int[]{0});
+                bitalino = new BITalinoDevice(100, new int[]{0});
 
                 bitalino.open(sock.getInputStream(), sock.getOutputStream());
 
@@ -311,33 +328,16 @@ public class RecordPatientSensorData extends Activity {
 
                     BITalinoFrame[] frames = bitalino.read(numberOfSamplesToRead);
 
-//                    if (UPLOAD) {
-//                        // prepare reading for upload
-//                        BITalinoReading reading = new BITalinoReading();
-//                        reading.setTimestamp(System.currentTimeMillis());
-//                        reading.setFrames(frames);
-//                        // instantiate reading service client
-//                        RestAdapter restAdapter = new RestAdapter.Builder()
-//                                .setEndpoint("http://server_ip:8080/bitalino")
-//                                .build();
-//                        ReadingService service = restAdapter.create(ReadingService.class);
-//                        // upload reading
-//                        Response response = service.uploadReading(reading);
-//                        assert response.getStatus() == 200;
-//                    }
 
                     /**  This passes sensor value to PublishProgess*/
                     for (BITalinoFrame frame : frames)
-                        //publishProgress(frame.toString());
+
                         publishProgress(Integer.toString(frame.getAnalog(0)));
 
 
                     counter++;
                 }
 
-                // trigger digital outputs
-                // int[] digital = { 1, 1, 1, 1 };
-                // device.trigger(digital);
             } catch (Exception e) {
                 Log.e(TAG, "There was an error.", e);
             }
@@ -361,8 +361,6 @@ public class RecordPatientSensorData extends Activity {
                 tempFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (SecurityException e) {
-                e.printStackTrace();
             }
         }
 
@@ -383,8 +381,8 @@ public class RecordPatientSensorData extends Activity {
 
                     int yVal = Integer.parseInt(values[0]);
                     /**  Updates Graph with new Sensor Values, Currently the graph will only show 20 on screen */
-                    if (yVal < 1000 && yVal > 0) {
-                        if (graphViewWrapperList.size() > 20)
+                    if (yVal < 800 && yVal > 200) {
+                        if (graphViewWrapperList.size() > 300)
                             graphViewWrapperList.remove(0);
                         graphViewWrapperList.add(new GraphViewWrapper(++xVal, yVal));
                         liveGraph.resetData(graphViewWrapperList.toArray(new GraphViewWrapper[0]));

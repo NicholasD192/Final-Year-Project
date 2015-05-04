@@ -30,11 +30,30 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-    <Button
+
+
+    </LinearLayout>
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Update"
-        android:id="@+id/btnUpdate"/>
+        android:text="Bitalino Mac Address"
+        android:textSize="20sp" />
+
+    <EditText
+        android:layout_width="279dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/editMac"
+        android:text=""
+        />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update"
+            android:id="@+id/btnUpdate"/>
 
     </LinearLayout>
 

@@ -23,6 +23,11 @@ public class Utilities {
         // Return the host ip from the shared preferences
         return prefs.getString("host_ip", "");
     }
+    public static String getMac(Context ctx) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        // Return the host ip from the shared preferences
+        return prefs.getString("mac_address", "");
+    }
 
 
     /** This method is called when the IP and scripts directory are required*/
