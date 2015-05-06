@@ -74,10 +74,13 @@ public class RecordPatientSensorData extends Activity {
     private static final boolean UPLOAD = false;
     Button bCancel, bUpload, bStart;
     File root = android.os.Environment.getExternalStorageDirectory();
+
     File dir = new File(root.getAbsolutePath() + "/Temp");
     String outputDir = root.getAbsolutePath() + "/Temp/";
     String outputFile = "temp.txt";
     InputStream isr = null;
+    int sampleRate;
+
 
 
     private class GraphViewWrapper implements GraphViewDataInterface {
@@ -119,10 +122,15 @@ public class RecordPatientSensorData extends Activity {
     private boolean testInitiated = false;
 
     private int xVal = 0;
+    int xBuff=0;
 
     private GraphViewSeries liveGraph;
+    TextView txtSensorType, txtSampleRate;
 
     private ArrayList<GraphViewWrapper> graphViewWrapperList;
+    StringBuilder buffData = new StringBuilder();
+    GraphView graphView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,18 +145,44 @@ public class RecordPatientSensorData extends Activity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         final int patientID = bundle.getInt("PatientID");
+        sampleRate = bundle.getInt("sampleRate");
         final int sensorType = bundle.getInt("sensorType");
+
+        txtSensorType = (TextView) findViewById(R.id.txtSensorType);
+        txtSampleRate = (TextView) findViewById(R.id.txtSampleRate);
+        txtSensorType.setText("Sensor Type: " + returnSensorType(sensorType));
+        txtSampleRate.setText("Sample Rate: " + sampleRate + "Hz");
+
         Calendar c = Calendar.getInstance();
         final String Notes = "";
+
+
+        /**  Sets up the axis and various properties of the graphView Package */
+        graphView = new LineGraphView(this, "Patient Data");
+        graphView.setScrollable(true);
+        graphView.addSeries(liveGraph);
+        graphView.setManualYAxis(true);
+        graphView.setManualYAxisBounds(1000,0);
+
+
+        LinearLayout layout = (LinearLayout) findViewById(R.id.live_graph);
+        layout.addView(graphView);
+
+        //Currently can't upload data at this rate
+        if(sampleRate == 1000)
+        {
+            bUpload.setVisibility(View.GONE);
+        }
+
+
+
 
 
         /**  This will store the date the sensor information has been taken */
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
         final String dateFormatted = date.format(c.getTime());
 
-
         graphViewWrapperList = new ArrayList<GraphViewWrapper>();
-
         final TestAsyncTask MySyncTask = new TestAsyncTask();
         bCancel.setOnClickListener(new View.OnClickListener() {
 
@@ -198,7 +232,7 @@ public class RecordPatientSensorData extends Activity {
                 nameValuePairs.add(new BasicNameValuePair("date", dateFormatted));
                 nameValuePairs.add(new BasicNameValuePair("sensorfilename", sensorData));
                 nameValuePairs.add(new BasicNameValuePair("sensortype", Integer.toString(sensorType)));
-                nameValuePairs.add(new BasicNameValuePair("notes", Notes));
+                nameValuePairs.add(new BasicNameValuePair("samplerate", Integer.toString(sampleRate)));
 
                 /**  Connecting to server */
                 try {
@@ -240,20 +274,6 @@ public class RecordPatientSensorData extends Activity {
 
         });
 
-        /**  Sets up the axis and various properties of the graphView Package */
-        GraphView graphView = new LineGraphView(this, "Patient Data");
-        graphView.setScrollable(true);
-        graphView.addSeries(liveGraph);
-        graphView.setDisableTouch(false);
-        graphView.setManualMaxY(true);
-        graphView.setManualMinY(true);
-        graphView.setManualYMaxBound(800);
-        graphView.setManualYMinBound(200);
-
-        LinearLayout layout = (LinearLayout) findViewById(R.id.live_graph);
-        layout.addView(graphView);
-
-
     }
 
     /**
@@ -286,9 +306,27 @@ public class RecordPatientSensorData extends Activity {
         return data;
 
     }
+    /**
+     * Returns the sensorType from an integer to be displayed
+     */
+    public String returnSensorType(int sensorType){
+        if  (sensorType == 1) {
+            return "EMG";
+        }
+        if (sensorType == 2) {
+            return "ECG";
+        }
+        if (sensorType == 3) {
+            return "EDA";
+        }
+        return null;
+
+    }
+
+
 
     /**
-     * A Sync Task
+     * Main Async Task that connects to bitalino device
      */
     private class TestAsyncTask extends AsyncTask<Void, String, Void> {
         ArrayAdapter<String> adapter;
@@ -297,6 +335,8 @@ public class RecordPatientSensorData extends Activity {
         private InputStream is = null;
         private OutputStream os = null;
         private BITalinoDevice bitalino;
+        private PrintWriter out;
+
 
         @Override
         protected Void doInBackground(Void... paramses) {
@@ -314,7 +354,7 @@ public class RecordPatientSensorData extends Activity {
                 sock.connect();
                 testInitiated = true;
 
-                bitalino = new BITalinoDevice(100, new int[]{0});
+                bitalino = new BITalinoDevice(sampleRate, new int[]{0});
 
                 bitalino.open(sock.getInputStream(), sock.getOutputStream());
 
@@ -348,8 +388,7 @@ public class RecordPatientSensorData extends Activity {
         @Override
         /**  Creates Temp File to Store Sensor Data, This is done as the MySyncTask is created*/
         protected void onPreExecute() {
-
-
+            graphView.setManualYAxis(false);
             if (!dir.isDirectory()) {
                 dir.mkdir();
             }
@@ -371,24 +410,37 @@ public class RecordPatientSensorData extends Activity {
 
             if (values.length > 0) {
                 try {
-                    try {
-                        PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(outputDir + outputFile, true)));
-                        out.println(values[0]);
-                        out.close();
-                    } catch (IOException e) {
+                    //Sets up a buffer so its not writing 1000 times a second to external memory
 
-                    }
+                        if (sampleRate == 10 || sampleRate == 100) {
+                            buffData.append(values[0] + "\n");
+                            if (xBuff == 10) {
+                                try {
+                                    out = new PrintWriter(new BufferedWriter(new FileWriter(outputDir + outputFile, true)));
+                                    out.println(buffData.toString());
+                                    out.flush();
+                                } catch (IOException e) {
+
+                                }
+                                buffData.setLength(0);
+                                xBuff = 0;
+                            }
+                        }
+
 
                     int yVal = Integer.parseInt(values[0]);
                     /**  Updates Graph with new Sensor Values, Currently the graph will only show 20 on screen */
-                    if (yVal < 800 && yVal > 200) {
-                        if (graphViewWrapperList.size() > 300)
+                    if (yVal < 1000 && yVal > 0) {
+                        if (graphViewWrapperList.size() > onScreenData())
                             graphViewWrapperList.remove(0);
                         graphViewWrapperList.add(new GraphViewWrapper(++xVal, yVal));
                         liveGraph.resetData(graphViewWrapperList.toArray(new GraphViewWrapper[0]));
                     }
                 } catch (NumberFormatException e) {
 
+                }
+                if (sampleRate == 10 || sampleRate == 100) {
+                    xBuff++;
                 }
             }
         }
@@ -406,6 +458,22 @@ public class RecordPatientSensorData extends Activity {
             } catch (Exception e) {
                 Log.e(TAG, "There was an error.", e);
             }
+        }
+
+        protected int onScreenData(){
+
+            if (sampleRate == 10) {
+                return 50;
+            }
+            if (sampleRate == 100) {
+                return 500;
+            }
+            if (sampleRate == 1000) {
+                return 5000;
+            }
+            else
+
+            return 100;
         }
 
     }

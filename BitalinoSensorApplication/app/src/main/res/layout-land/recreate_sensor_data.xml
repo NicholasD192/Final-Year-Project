@@ -29,18 +29,33 @@
         android:layout_height="wrap_content"
         android:ems="5"
         android:text="Restart" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_height="match_parent"
+            android:layout_width="138dp"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:background="@drawable/background">
+
+
         <TextView
             android:id="@+id/txtSensorType"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="5"
             android:layout_weight="0.25" />
+            <TextView
+                android:id="@+id/txtSampleRate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="5"
+                android:layout_weight="0.25" />
+        </LinearLayout>
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.72"
             android:layout_gravity="center"
-            android:id="@+id/seekSpeed"/>
+            android:id="@+id/seekSpeed"
+            android:layout_weight="0.96" />
 
 
 </LinearLayout>

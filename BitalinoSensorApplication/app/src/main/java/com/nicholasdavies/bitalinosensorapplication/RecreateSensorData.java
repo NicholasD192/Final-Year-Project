@@ -133,11 +133,12 @@ public class RecreateSensorData extends Activity {
 
     private ArrayList<GraphViewWrapper> fileBuffer;
     int SensordataID, speed = 50;
-    String sensorData,id;
+    String sensorData,id, sampleRateString;
 
     String patientID = "";
     String sensorTypeString;
-    TextView txtSensorType;
+    int sampleRate;
+    TextView txtSensorType,txtSampleRate;
     SeekBar seekSpeed;
     File dir = new File(root.getAbsolutePath() + "/Temp");
     String outputDir = root.getAbsolutePath() + "/Temp/";
@@ -152,8 +153,10 @@ public class RecreateSensorData extends Activity {
         liveGraph = new GraphViewSeries(new GraphView.GraphViewData[]{});
         bRestart = (Button) findViewById(R.id.btnRestart);
         txtSensorType = (TextView) findViewById(R.id.txtSensorType);
+        txtSampleRate = (TextView) findViewById(R.id.txtSampleRate);
         seekSpeed = (SeekBar) findViewById(R.id.seekSpeed);
-        seekSpeed.setMax(100);
+        seekSpeed.setProgress(75);
+        seekSpeed.setMax(150);
 
 
         //Importing patient ID from previous activity
@@ -208,11 +211,6 @@ public class RecreateSensorData extends Activity {
         GraphView graphView = new LineGraphView(this, "Patient Data");
         graphView.setScrollable(true);
         graphView.addSeries(liveGraph);
-        graphView.setDisableTouch(false);
-        graphView.setManualMaxY(true);
-        graphView.setManualMinY(true);
-        graphView.setManualYMaxBound(800);
-        graphView.setManualYMinBound(100);
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.live_graph);
         layout.addView(graphView);
@@ -281,6 +279,8 @@ public class RecreateSensorData extends Activity {
                 JSONObject json = jArray.getJSONObject(i);
                 sensorData = "" + json.getString("SensorFileName");
                 patientID = "" + json.getString("PatientID");
+                sampleRateString = "" + json.getString("SampleRate");
+                sampleRate = Integer.parseInt(sampleRateString);
                 id = "" + json.getString("SensorType");
                 if (id.equals("1")) {
                     sensorTypeString = "EMG";
@@ -292,6 +292,7 @@ public class RecreateSensorData extends Activity {
                     sensorTypeString = "EDA";
                 }
                 txtSensorType.setText("Sensor Type: " + sensorTypeString);
+                txtSampleRate.setText("Sample Rate: " + sampleRateString + "Hz");
             }
 
 
@@ -372,11 +373,16 @@ public class RecreateSensorData extends Activity {
             try {
                 while ((line = br.readLine()) != null) {
 
-
+                    try {
                     int yVal = Integer.parseInt(line);
-
                     if (yVal > 0 && yVal < 1000)
                         fileBuffer.add(new GraphViewWrapper(++xVal, yVal));
+                    } catch (NumberFormatException e) {
+
+                    }
+
+
+
                 }
 
                 br.close();
@@ -391,8 +397,7 @@ public class RecreateSensorData extends Activity {
 
     private class TestAsyncTask extends AsyncTask<Void, String, Void> {
 
-        //This is the amount on screen before scrolling begins
-        private final int MAX_BEFORE_SCROLL = 100;
+        private final int MAX_BEFORE_SCROLL = onScreenData(sampleRate);
         /**
          * Buffer to hold the currently shown values, won't exceed maxBeforeScroll in length
          */
@@ -429,12 +434,11 @@ public class RecreateSensorData extends Activity {
                     if (graphViewWrapperList.get(i).getX() != i)
                         graphViewWrapperList.get(i).setX(i);
                 }
-
                 publishProgress(null);
 
                 // Attempt the sleep for 1 second
                 try {
-                    Thread.sleep(0,speed);
+                    Thread.sleep(speed);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -449,13 +453,34 @@ public class RecreateSensorData extends Activity {
         protected void onProgressUpdate(String... values) {
 
             // Actually load the data onto the graph
-            liveGraph.resetData(graphViewWrapperList.toArray(new GraphViewWrapper[0]));
+            try {
+                liveGraph.resetData(graphViewWrapperList.toArray(new GraphViewWrapper[0]));
+            } catch (NullPointerException e) {
+
+            }
+
         }
 
         @Override
         protected void onCancelled() {
 
         }
+        protected int onScreenData(int sampleRate){
+
+            if (sampleRate == 10) {
+                return 50;
+            }
+            if (sampleRate == 100) {
+                return 500;
+            }
+            if (sampleRate == 1000) {
+                return 5000;
+            }
+            else
+
+                return 100;
+        }
+
 
     }
 

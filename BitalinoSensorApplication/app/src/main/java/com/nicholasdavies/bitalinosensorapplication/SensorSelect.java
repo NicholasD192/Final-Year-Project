@@ -79,8 +79,8 @@ public class SensorSelect extends Activity implements Serializable {
     List<ListObject> patientnames;
     TextView error;
 
-    boolean noSensor;
-    int sensorType;
+    boolean noSensor, noSample;
+    int sensorType, sampleRate;
 
 
     @Override
@@ -102,11 +102,12 @@ public class SensorSelect extends Activity implements Serializable {
 
     public void setupDropDown() {
         /** Dropdown menu where user can select Sensors */
-        Spinner dropdown = (Spinner) findViewById(R.id.spinner1);
-        String[] dropdownitems = new String[]{"Choose Sensor", "EMG", "ECG", "EDA"};
-        ArrayAdapter<String> dropDownAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dropdownitems);
-        dropdown.setAdapter(dropDownAdapter);
-        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        Spinner sensorDropDown = (Spinner) findViewById(R.id.spinner1);
+        String[] dropdownsensoritems = new String[]{"Choose Sensor", "EMG", "ECG", "EDA"};
+
+        ArrayAdapter<String> dropDownAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, dropdownsensoritems);
+        sensorDropDown.setAdapter(dropDownAdapter);
+        sensorDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 /** Validation */
@@ -125,6 +126,44 @@ public class SensorSelect extends Activity implements Serializable {
 
             }
         });
+        /** Dropdown menu where user can select Sensor Sample Rate */
+        String[] sampleRateArray = new String[]{"Choose Rate", "10", "100", "1000"};
+        Spinner sampleDropDown = (Spinner) findViewById(R.id.spinner2);
+        ArrayAdapter<String> sampleRateAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sampleRateArray);
+        sampleDropDown.setAdapter(sampleRateAdapter);
+        sampleDropDown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                /** Validation */
+                if (i == 0) {
+                    noSample = true;
+                } else {
+                    noSample = false;
+                    if (i==1)
+                    {
+                        sampleRate = 10;
+                    }
+                    if (i==2)
+                    {
+                        sampleRate = 100;
+
+                    }
+                    if (i==3)
+                    {
+                        sampleRate = 1000;
+                    }
+
+
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
     }
 
 
@@ -196,14 +235,21 @@ public class SensorSelect extends Activity implements Serializable {
                     Toast.makeText(adapterView.getContext(), "You have not selected a sensor", Toast.LENGTH_SHORT).show();
 
                 }
+                if (noSample) {
+
+                    Toast.makeText(adapterView.getContext(), "You have not selected a Sample Rate", Toast.LENGTH_SHORT).show();
+
+                }
                 if (!BluetoothAdapter.isEnabled()) {
                     Toast.makeText(adapterView.getContext(), "Bluetooth must be enabled to connect to Bitalino Device", Toast.LENGTH_SHORT).show();
                 }
-                if (BluetoothAdapter.isEnabled() && (!noSensor)) {
+                if (BluetoothAdapter.isEnabled() && (!noSensor) && (!noSample)) {
                     ListObject item = (ListObject) resultView.getItemAtPosition(i);
                     Intent intent = new Intent(getApplicationContext(), RecordPatientSensorData.class);
                     Bundle extras = new Bundle();
 
+
+                    extras.putInt("sampleRate", sampleRate);
                     extras.putInt("sensorType", sensorType);
                     extras.putInt("PatientID", item.getArbitraryDataA());
                     intent.putExtras(extras);

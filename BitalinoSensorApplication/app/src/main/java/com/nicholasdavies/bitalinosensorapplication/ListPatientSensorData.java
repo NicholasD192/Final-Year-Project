@@ -155,7 +155,6 @@ public class ListPatientSensorData extends Activity implements Serializable {
                 JSONObject json = jArray.getJSONObject(i);
                 sensorType = "" + json.getString("SensorType");
 
-
                 id = Integer.parseInt(sensorType);
 
                 if (id == 1) {
@@ -169,7 +168,7 @@ public class ListPatientSensorData extends Activity implements Serializable {
                 }
 
                 /** Constructs List entry */
-                s = "Date:" + json.getString("Date") + " Sensor Type: " + sensorTypeString + "\n";
+                s = "Date:" + json.getString("Date") + " | Sensor Type: " + sensorTypeString + " | Sample Rate: " + json.getString("SampleRate") + "Hz" + "\n";
 
                 sensorDataID = json.getString("SensorDataID");
                 intsensorDataID = Integer.parseInt(sensorDataID);

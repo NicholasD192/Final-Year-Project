@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recording Sensor Data"
+            android:text="Recording Data"
             android:textSize="20sp"/>
 
         <Button
@@ -40,6 +40,27 @@
             android:layout_height="wrap_content"
             android:ems="5"
             android:text="Cancel" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:background="@drawable/background">
+
+
+        <TextView
+            android:id="@+id/txtSensorType"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:text="Sesnor Type:" />
+            <TextView
+                android:id="@+id/txtSampleRate"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:ems="5"
+                android:text="Sample Rate:" />
+        </LinearLayout>
 
 
     </LinearLayout>
