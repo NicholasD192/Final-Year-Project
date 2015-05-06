@@ -178,6 +178,8 @@ public class RecordPatientSensorData extends Activity {
 
 
 
+
+
         /**  This will store the date the sensor information has been taken */
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
         final String dateFormatted = date.format(c.getTime());
@@ -267,6 +269,15 @@ public class RecordPatientSensorData extends Activity {
                     e.printStackTrace();
                 } catch (IOException e) {
                     Log.e("Log_tag", "IOException");
+                    Toast.makeText(getApplicationContext(), "Attempting to re-upload in 5 seconds", Toast.LENGTH_LONG).show();
+                    try {
+                        Thread.sleep(5000);
+
+                    } catch (Exception x) {
+                        x.printStackTrace();
+                    }
+                    bUpload.callOnClick();
+
                     e.printStackTrace();
                 }
 
@@ -351,8 +362,17 @@ public class RecordPatientSensorData extends Activity {
                 btAdapter.cancelDiscovery();
 
                 sock = dev.createRfcommSocketToServiceRecord(MY_UUID);
-                sock.connect();
-                testInitiated = true;
+
+
+
+                try {
+                    sock.connect();
+                } catch (IOException e) {
+                    Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
+                    startActivity(openStartingPoint);
+
+                }
+
 
                 bitalino = new BITalinoDevice(sampleRate, new int[]{0});
 

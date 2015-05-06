@@ -138,7 +138,8 @@ public class RecreateSensorData extends Activity {
     String patientID = "";
     String sensorTypeString;
     int sampleRate;
-    TextView txtSensorType,txtSampleRate;
+    double time =0;
+    TextView txtSensorType,txtSampleRate,txtTime;
     SeekBar seekSpeed;
     File dir = new File(root.getAbsolutePath() + "/Temp");
     String outputDir = root.getAbsolutePath() + "/Temp/";
@@ -154,6 +155,7 @@ public class RecreateSensorData extends Activity {
         bRestart = (Button) findViewById(R.id.btnRestart);
         txtSensorType = (TextView) findViewById(R.id.txtSensorType);
         txtSampleRate = (TextView) findViewById(R.id.txtSampleRate);
+        txtTime = (TextView) findViewById(R.id.txtTime);
         seekSpeed = (SeekBar) findViewById(R.id.seekSpeed);
         seekSpeed.setProgress(75);
         seekSpeed.setMax(150);
@@ -209,8 +211,9 @@ public class RecreateSensorData extends Activity {
         });
 
         GraphView graphView = new LineGraphView(this, "Patient Data");
-        graphView.setScrollable(true);
+
         graphView.addSeries(liveGraph);
+
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.live_graph);
         layout.addView(graphView);
@@ -376,6 +379,7 @@ public class RecreateSensorData extends Activity {
                     try {
                     int yVal = Integer.parseInt(line);
                     if (yVal > 0 && yVal < 1000)
+
                         fileBuffer.add(new GraphViewWrapper(++xVal, yVal));
                     } catch (NumberFormatException e) {
 
@@ -433,11 +437,13 @@ public class RecreateSensorData extends Activity {
                 for (int i = 0; i < graphViewWrapperList.size(); i++) {
                     if (graphViewWrapperList.get(i).getX() != i)
                         graphViewWrapperList.get(i).setX(i);
+
                 }
                 publishProgress(null);
 
                 // Attempt the sleep for 1 second
                 try {
+                    timePassed();
                     Thread.sleep(speed);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -468,10 +474,10 @@ public class RecreateSensorData extends Activity {
         protected int onScreenData(int sampleRate){
 
             if (sampleRate == 10) {
-                return 50;
+                return 100;
             }
             if (sampleRate == 100) {
-                return 500;
+                return 400;
             }
             if (sampleRate == 1000) {
                 return 5000;
@@ -482,6 +488,26 @@ public class RecreateSensorData extends Activity {
         }
 
 
+
+
+    }
+    /**
+     * Updates the textView at the top of the page.
+     */
+    private void timePassed(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (sampleRate == 10)
+                {
+                    time = time + 0.1;
+                    txtTime.setText("Time: " + time + "s");
+                }
+                if (sampleRate == 100)
+                    time = time + 0.01;
+                txtTime.setText("Time: " + String.format("%.2f",time) + "s");
+            }
+        });
     }
 
 }

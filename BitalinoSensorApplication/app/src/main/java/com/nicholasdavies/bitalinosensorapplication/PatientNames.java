@@ -126,7 +126,10 @@ public class PatientNames extends Activity implements Serializable {
             isr = entity.getContent();
         } catch (Exception e) {
             Log.e("log_tag", "Error in http connection " + e.toString());
-            error.setText("Couldn't connect to database");
+            Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
+            startActivity(openStartingPoint);
+            Toast.makeText(getApplicationContext(), "Network Error - Check IP Settings", Toast.LENGTH_LONG).show();
+
         }
         /**  Creates String From Response*/
         try {

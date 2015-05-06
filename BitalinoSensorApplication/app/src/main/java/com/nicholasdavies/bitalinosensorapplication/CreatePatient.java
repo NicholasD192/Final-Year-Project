@@ -106,6 +106,7 @@ public class CreatePatient extends Activity {
                         e.printStackTrace();
                     } catch (IOException e) {
                         Log.e("Log_tag", "IOException");
+                        Toast.makeText(arg0.getContext(), "Network Error", Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
                 } else {

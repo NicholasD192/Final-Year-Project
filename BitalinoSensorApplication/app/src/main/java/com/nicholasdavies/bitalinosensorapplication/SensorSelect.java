@@ -23,12 +23,15 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Spinner;
@@ -90,13 +93,31 @@ public class SensorSelect extends Activity implements Serializable {
         StrictMode.enableDefaults(); //STRICT MODE ENABLE
         patientnames = new ArrayList<ListObject>();
         ListView resultView = (ListView) findViewById(R.id.patient_Names);
+        EditText search = (EditText) findViewById(R.id.search);
         setupDropDown();
 
         getData();
         onClickList();
 
-        ArrayAdapter<ListObject> myadapter = new ArrayAdapter<ListObject>(this, R.layout.patient_list_item, R.id.label, patientnames);
+        final ArrayAdapter<ListObject> myadapter = new ArrayAdapter<ListObject>(this, R.layout.patient_list_item, R.id.label, patientnames);
         resultView.setAdapter(myadapter);
+
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                myadapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
     }
 
@@ -180,7 +201,9 @@ public class SensorSelect extends Activity implements Serializable {
             isr = entity.getContent();
         } catch (Exception e) {
             Log.e("log_tag", "Error in http connection " + e.toString());
-            error.setText("Couldn't connect to database");
+            Intent openStartingPoint = new Intent("com.nicholasdavies.bitalinosensorapplication.MAIN");
+            startActivity(openStartingPoint);
+            Toast.makeText(getApplicationContext(), "Network Error - Check IP Settings", Toast.LENGTH_LONG).show();
         }
         /** Converting response to string */
         try {
